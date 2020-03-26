@@ -1,0 +1,117 @@
+service: ethiopia-covid-19-gateway
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  environment:
+    COMMUNITY_TABLE: CommunityReports
+    TRAVELERS_TABLE: TravelersReports
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TRAVELERS_TABLE}"
+
+functions:
+  create:
+    handler: handlers/create.create
+    events:
+      - http:
+          path: covid-gateway/{type}
+          method: post
+          cors: true
+          request:
+            parameters:
+              paths:
+                type: true
+
+  list:
+    handler: handlers/list.list
+    events:
+      - http:
+          path: covid-gateway/{type}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                type: true
+
+  get:
+    handler: handlers/get.get
+    events:
+      - http:
+          path: covid-gateway/{type}/{id}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                type: true
+                id: true
+
+  update:
+    handler: handlers/update.update
+    events:
+      - http:
+          path: covid-gateway/{type}/{id}
+          method: put
+          cors: true
+          request:
+            parameters:
+              paths:
+                type: true
+                id: true
+
+  delete:
+    handler: handlers/delete.delete
+    events:
+      - http:
+          path: covid-gateway/{type}/{id}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                type: true
+                id: true
+
+resources:
+  Resources:
+    CommunityTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.COMMUNITY_TABLE}
+    TravelersTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.TRAVELERS_TABLE}
