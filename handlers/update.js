@@ -1,7 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable } = require('../helpers');
+const { getTable, prepUpdateParams } = require('../helpers');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -30,17 +30,7 @@ module.exports.update = (event, context, callback) => {
     Key: {
       id,
     },
-    ExpressionAttributeNames: {
-      '#todo_text': 'text',
-    },
-    ExpressionAttributeValues: {
-      ':text': data.text,
-      ':checked': data.checked,
-      ':updatedAt': timestamp,
-    },
-    UpdateExpression:
-      'SET #todo_text = :text, checked = :checked, updatedAt = :updatedAt',
-    ReturnValues: 'ALL_NEW',
+    ...prepUpdateParams({ ...data, updatedAt: timestamp }),
   };
 
   // update the todo in the database

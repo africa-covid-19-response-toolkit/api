@@ -4,7 +4,9 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
+  region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
+  runtime: nodejs12.x
   environment:
     COMMUNITY_TABLE: CommunityReports
     TRAVELERS_TABLE: TravelersReports
