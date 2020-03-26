@@ -9,7 +9,7 @@ provider:
   runtime: nodejs12.x
   environment:
     COMMUNITY_TABLE: CommunityReports
-    TRAVELERS_TABLE: TravelersReports
+    # TRAVELERS_TABLE: TravelersReports
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -21,7 +21,7 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TRAVELERS_TABLE}"
+        # - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TRAVELERS_TABLE}"
 
 functions:
   create:
@@ -103,17 +103,17 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.COMMUNITY_TABLE}
-    TravelersTable:
-      Type: "AWS::DynamoDB::Table"
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.TRAVELERS_TABLE}
+    # TravelersTable:
+    #   Type: "AWS::DynamoDB::Table"
+    #   DeletionPolicy: Retain
+    #   Properties:
+    #     AttributeDefinitions:
+    #       - AttributeName: id
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: id
+    #         KeyType: HASH
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 1
+    #       WriteCapacityUnits: 1
+    #     TableName: ${self:provider.environment.TRAVELERS_TABLE}

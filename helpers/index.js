@@ -48,8 +48,8 @@ module.exports.getTable = type => {
   switch (type) {
     case 'communities':
       return process.env.COMMUNITY_TABLE;
-    case 'travellers':
-      return process.env.TRAVELERS_TABLE;
+    // case 'travellers':
+    //   return process.env.TRAVELERS_TABLE;
     default:
       return null;
   }
