@@ -21,19 +21,22 @@ module.exports.removeEmptyStringElements = obj => {
  * @param {String} ReturnValues ReturnValues param.
  */
 module.exports.prepUpdateParams = (data, ReturnValues = 'ALL_NEW') => {
+  const ExpressionAttributeNames = {};
   const ExpressionAttributeValues = {};
   let UpdateExpression = '';
   const structure = [];
 
   for (const key in data) {
     if (key === 'id') continue;
-    const label = `:${key}`;
-    ExpressionAttributeValues[label] = data[key];
-    structure.push(`${key} = ${label}`);
+    const attr = `#attr_${key}`;
+    ExpressionAttributeNames[attr] = `${key}`;
+    ExpressionAttributeValues[`:${key}`] = data[key];
+    structure.push(`${attr} = :${key}`);
   }
 
   UpdateExpression = `SET ${structure.join(', ')}`;
   return {
+    ExpressionAttributeNames,
     ExpressionAttributeValues,
     UpdateExpression,
     ReturnValues,
