@@ -88,7 +88,8 @@ module.exports.authorize = (event, context, cb) => {
               console.log('access_token use is not access');
               cb('Unauthorized');
             }
-            cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
+            // cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
+            cb(null, generatePolicy(decoded.sub, 'Allow', '*'));
           }
         });
       }
