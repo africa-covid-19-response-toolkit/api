@@ -54,3 +54,15 @@ module.exports.getTable = type => {
       return null;
   }
 };
+
+// Returns JWT header.
+module.exports.extractTokenHeader = token => {
+  const tokenSections = (token || '').split('.');
+  if (tokenSections.length < 2) {
+    console.log('requested token is invalid');
+    return null;
+  }
+  const headerJSON = Buffer.from(tokenSections[0], 'base64').toString('utf8');
+  const header = JSON.parse(headerJSON);
+  return header;
+};

@@ -1,6 +1,6 @@
 service: ethiopia-covid-19-gateway
 
-frameworkVersion: ">=1.1.0 <2.0.0"
+frameworkVersion: '>=1.1.0 <2.0.0'
 
 provider:
   name: aws
@@ -9,6 +9,7 @@ provider:
   runtime: nodejs12.x
   environment:
     COMMUNITY_TABLE: CommunityReports
+    AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
     # TRAVELERS_TABLE: TravelersReports
   iamRoleStatements:
     - Effect: Allow
@@ -20,16 +21,20 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}"
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}'
         # - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TRAVELERS_TABLE}"
 
 functions:
+  auth:
+    handler: handlers/auth.authorize
+
   create:
     handler: handlers/create.create
     events:
       - http:
           path: covid-gateway/{type}
           method: post
+          authorizer: auth
           cors: true
           request:
             parameters:
@@ -42,6 +47,7 @@ functions:
       - http:
           path: covid-gateway/{type}
           method: get
+          authorizer: auth
           cors: true
           request:
             parameters:
@@ -54,11 +60,7 @@ functions:
       - http:
           path: covid-gateway/{type}/{id}
           method: get
-          authorizer:
-            name: COVIDGatewayAuthorizer
-            arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_AGCA6XBTP
-            scopes:
-              - https://api.ethiopia-covid19.com/covid-gateway/resource.read
+          authorizer: auth
           cors: true
           request:
             parameters:
@@ -72,6 +74,7 @@ functions:
       - http:
           path: covid-gateway/{type}/{id}
           method: put
+          authorizer: auth
           cors: true
           request:
             parameters:
@@ -85,6 +88,7 @@ functions:
       - http:
           path: covid-gateway/{type}/{id}
           method: delete
+          authorizer: auth
           cors: true
           request:
             parameters:
@@ -95,7 +99,7 @@ functions:
 resources:
   Resources:
     CommunityTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
