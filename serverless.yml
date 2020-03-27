@@ -54,6 +54,11 @@ functions:
       - http:
           path: covid-gateway/{type}/{id}
           method: get
+          authorizer:
+            name: COVIDGatewayAuthorizer
+            arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_AGCA6XBTP
+            scopes:
+              - https://api.ethiopia-covid19.com/covid-gateway/resource.read
           cors: true
           request:
             parameters:
