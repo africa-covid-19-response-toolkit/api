@@ -32,7 +32,6 @@ module.exports.create = (event, context, callback) => {
     Item: {
       ...removeEmptyStringElements(data),
       id: uuidv4(),
-      checked: false,
       createdAt: timestamp,
       updatedAt: timestamp,
     },
@@ -56,7 +55,7 @@ module.exports.create = (event, context, callback) => {
 
     // create a response
     const response = {
-      statusCode: 200,
+      statusCode: 201,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
