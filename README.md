@@ -9,7 +9,12 @@ authorLink: 'https://github.com/ozbillwang'
 authorName: 'Bill Wang'
 authorAvatar: 'https://avatars3.githubusercontent.com/u/8954908?v=4&s=140'
 -->
-# Serverless REST API
+# API for writing/retrieving Covid19 data
+
+This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. [Covid19.ET](https://github.com/Ethiopia-COVID19/Covid19.ET) project will use it to retrieve data for dashboard and write data
+
+
+## Serverless REST API
 
 This example demonstrates how to setup a [RESTful Web Services](https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services) allowing you to create, list, get, update and delete Community. DynamoDB is used to store the data. This is just an example and of course you could use any data storage as a backend.
 
