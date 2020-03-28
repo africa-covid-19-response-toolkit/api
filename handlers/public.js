@@ -16,7 +16,7 @@ module.exports.create = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: communities`,
+      body: { message: `Unknown type provided. Type name: communities` },
     });
 
   const timestamp = new Date().getTime();
@@ -44,7 +44,7 @@ module.exports.create = (event, context, callback) => {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: "Couldn't create the community item.",
+        body: { message: `Couldn't create the community item.` },
       });
       return;
     }

@@ -20,7 +20,7 @@ module.exports.create = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: ${type}`,
+      body: { message: `Unknown type provided. Type name: ${type}` },
     });
 
   const timestamp = new Date().getTime();
@@ -48,7 +48,7 @@ module.exports.create = (event, context, callback) => {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: `Couldn't create the ${type} item.`,
+        body: { message: `Couldn't create the ${type} item.` },
       });
       return;
     }

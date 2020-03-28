@@ -1,6 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+const { getTable } = require('../helpers');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -18,7 +19,7 @@ module.exports.delete = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: ${type}`,
+      body: { message: `Unknown type provided. Type name: ${type}` },
     });
 
   const params = {
@@ -39,7 +40,7 @@ module.exports.delete = (event, context, callback) => {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: `Couldn't remove the ${type} item.`,
+        body: { message: `Couldn't remove the ${type} item.` },
       });
       return;
     }

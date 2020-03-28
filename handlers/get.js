@@ -19,7 +19,7 @@ module.exports.get = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: ${type}`,
+      body: { message: `Unknown type provided. Type name: ${type}` },
     });
 
   const params = {
@@ -29,7 +29,7 @@ module.exports.get = (event, context, callback) => {
     },
   };
 
-  // fetch community from the database
+  // fetch {type} from the database
   dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -37,7 +37,7 @@ module.exports.get = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 501,
         headers: { 'Content-Type': 'text/plain' },
-        body: "Couldn't fetch the community item.",
+        body: { message: `Couldn't fetch the ${type} item.` },
       });
       return;
     }

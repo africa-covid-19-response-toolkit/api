@@ -19,7 +19,7 @@ module.exports.update = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: ${type}`,
+      body: { message: `Unknown type provided. Type name: ${type}` },
     });
 
   const timestamp = new Date().getTime();
@@ -33,15 +33,15 @@ module.exports.update = (event, context, callback) => {
     ...prepUpdateParams({ ...data, updatedAt: timestamp }),
   };
 
-  // update the todo in the database
+  // update the {type} in the database
   dynamoDb.update(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error(error);
       callback(null, {
         statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'text/plain' },
-        body: "Couldn't fetch the todo item.",
+        headers: { 'Content-Type': 'application/json' },
+        body: { message: `Couldn't fetch the ${type} item.` },
       });
       return;
     }
