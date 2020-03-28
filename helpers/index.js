@@ -54,7 +54,7 @@ module.exports.getTable = type => {
       return process.env.MEDICAL_FACILITY_TABLE;
     case 'surveillance':
       return process.env.SURVEILLANCE_TABLE;
-    case 'tool-free':
+    case 'toll-free':
       return process.env.TOLL_FREE_TABLE;
     default:
       return null;
