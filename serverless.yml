@@ -9,8 +9,11 @@ provider:
   runtime: nodejs12.x
   environment:
     COMMUNITY_TABLE: CommunityReports
+    PASSENGERS_TABLE: PassengerReports
+    MEDICAL_FACILITY_TABLE: MedicalFacilityReports
+    SURVEILLANCE_TABLE: SurveillanceReports
     AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
-    # TRAVELERS_TABLE: TravelersReports
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,17 +25,26 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}'
-        # - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TRAVELERS_TABLE}"
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.PASSENGERS_TABLE}'
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MEDICAL_FACILITY_TABLE}'
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.SURVEILLANCE_TABLE}'
 
 functions:
   auth:
     handler: handlers/auth.authorize
 
+  public-create:
+    handler: handlers/public.create
+    events:
+      - http:
+          path: gateway/community-report
+          method: post
+
   create:
     handler: handlers/create.create
     events:
       - http:
-          path: covid-gateway/{type}
+          path: gateway/{type}
           method: post
           authorizer: auth
           cors: true
@@ -45,7 +57,7 @@ functions:
     handler: handlers/list.list
     events:
       - http:
-          path: covid-gateway/{type}
+          path: gateway/{type}
           method: get
           authorizer: auth
           cors: true
@@ -58,7 +70,7 @@ functions:
     handler: handlers/get.get
     events:
       - http:
-          path: covid-gateway/{type}/{id}
+          path: gateway/{type}/{id}
           method: get
           authorizer: auth
           cors: true
@@ -72,7 +84,7 @@ functions:
     handler: handlers/update.update
     events:
       - http:
-          path: covid-gateway/{type}/{id}
+          path: gateway/{type}/{id}
           method: put
           authorizer: auth
           cors: true
@@ -86,7 +98,7 @@ functions:
     handler: handlers/delete.delete
     events:
       - http:
-          path: covid-gateway/{type}/{id}
+          path: gateway/{type}/{id}
           method: delete
           authorizer: auth
           cors: true
@@ -95,34 +107,3 @@ functions:
               paths:
                 type: true
                 id: true
-
-# resources:
-#   Resources:
-#     CommunityTable:
-#       Type: 'AWS::DynamoDB::Table'
-#       DeletionPolicy: Retain
-#       Properties:
-#         AttributeDefinitions:
-#           - AttributeName: id
-#             AttributeType: S
-#         KeySchema:
-#           - AttributeName: id
-#             KeyType: HASH
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
-#         TableName: ${self:provider.environment.COMMUNITY_TABLE}
-    # TravelersTable:
-    #   Type: "AWS::DynamoDB::Table"
-    #   DeletionPolicy: Retain
-    #   Properties:
-    #     AttributeDefinitions:
-    #       - AttributeName: id
-    #         AttributeType: S
-    #     KeySchema:
-    #       - AttributeName: id
-    #         KeyType: HASH
-    #     ProvisionedThroughput:
-    #       ReadCapacityUnits: 1
-    #       WriteCapacityUnits: 1
-    #     TableName: ${self:provider.environment.TRAVELERS_TABLE}
