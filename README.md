@@ -38,89 +38,12 @@ In order to deploy the endpoint simply run
 serverless deploy
 ```
 
-The expected result should be similar to:
+API Documentation
+https://documenter.getpostman.com/view/370266/SzYW3L6e?version=latest
 
-```bash
-Serverless: Packaging service…
-Serverless: Uploading CloudFormation file to S3…
-Serverless: Uploading service .zip file to S3…
-Serverless: Updating Stack…
-Serverless: Checking Stack update progress…
-Serverless: Stack update finished…
 
-Service Information
-service: ethiopia-covid-19-gateway
-name: aws
-stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
-region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
-api keys:
-  None
-endpoints:
-  POST - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/covid-gateway/{type}
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/covid-gateway/{type}
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/covid-gateway/{type}/{id}
-  PUT - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/covid-gateway/{type}/{id}
-  DELETE - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/covid-gateway/{type}/{id}
-```
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/64e612b7b58fd9352206)
 
-## Usage
-
-You can create, retrieve, update, or delete communities with the following commands:
-
-### Create a Communities
-
-```bash
-curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/communities --data '{ "name": "John Doe" }'
-```
-
-Example Result:
-```bash
-{"name":"John Doe","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
-```
-
-### List all Communities
-
-```bash
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/communities
-```
-
-Example output:
-```bash
-[{"name":"John Doe","id":"ac90feaa11e6-9ede-afdfa051af86","checked":true,"updatedAt":1479139961304},{"name":"Jane Doe","id":"206793aa11e6-9ede-afdfa051af86","createdAt":1479139943241,"checked":false,"updatedAt":1479139943241}]%
-```
-
-### Get one Todo
-
-```bash
-# Replace the <id> part with a real id from your community table
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/communities/<id>
-```
-
-Example Result:
-```bash
-{"name":"John Doe","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
-```
-
-### Update a Todo
-
-```bash
-# Replace the <id> part with a real id from your communities table
-curl -X PUT https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/communities/<id> --data '{ "name": "John Doe", "checked": true }'
-```
-
-Example Result:
-```bash
-{"name":"John Doe","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":true,"updatedAt":1479138570824}%
-```
-
-### Delete a Todo
-
-```bash
-# Replace the <id> part with a real id from your communities table
-curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/dev/communities/<id>
-```
-
-No output
 
 ## Scaling
 
