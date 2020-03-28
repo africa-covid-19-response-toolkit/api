@@ -2,6 +2,9 @@ service: ethiopia-covid-19-gateway
 
 frameworkVersion: '>=1.1.0 <2.0.0'
 
+plugins:
+  - serverless-domain-manager
+
 provider:
   name: aws
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
@@ -13,6 +16,7 @@ provider:
     MEDICAL_FACILITY_TABLE: MedicalFacilityReports
     SURVEILLANCE_TABLE: SurveillanceReports
     AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
+    DOMAIN_NAME: ethiopia-covid19.com
 
   iamRoleStatements:
     - Effect: Allow
@@ -107,3 +111,12 @@ functions:
               paths:
                 type: true
                 id: true
+
+# Adds the Custom DNS Name for API Gateway
+custom:
+  customDomain:
+    domainName: 'api.${self:provider.environment.DOMAIN_NAME}'
+    basePath: ''
+    stage: ${self:provider.stage}
+    certificateName: '*.${self:provider.environment.DOMAIN_NAME}'
+    createRoute53Record: false
