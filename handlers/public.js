@@ -7,11 +7,7 @@ const { removeEmptyStringElements, getTable } = require('../helpers');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.create = (event, context, callback) => {
-  const {
-    pathParameters: { type },
-  } = event;
-
-  const table = getTable(type);
+  const table = getTable('communities');
 
   if (!table)
     callback(null, {
@@ -20,7 +16,7 @@ module.exports.create = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: `Unknown type provided. Type name: ${type}`,
+      body: `Unknown type provided. Type name: communities`,
     });
 
   const timestamp = new Date().getTime();
@@ -37,7 +33,7 @@ module.exports.create = (event, context, callback) => {
     },
   };
 
-  // write the {type} to the database
+  // write the community to the database
   dynamoDb.put(params, error => {
     // handle potential errors
     if (error) {
@@ -48,7 +44,7 @@ module.exports.create = (event, context, callback) => {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: `Couldn't create the ${type} item.`,
+        body: "Couldn't create the community item.",
       });
       return;
     }
