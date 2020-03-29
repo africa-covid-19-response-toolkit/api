@@ -26,7 +26,7 @@ describe('Update tests', () => {
     }
   });
 
-	it('should update to DB', (done) => {
+  it('should update to DB', (done) => {
     restore = mockedEnv({
       PASSENGERS_TABLE: 'PassengerReports',
     });
@@ -35,7 +35,7 @@ describe('Update tests', () => {
     const expectedResult = {'Attributes': {...eventBody}};
 
     stubUpdate.withArgs().yields(null, expectedResult);
-    
+
     stubbedHandler.update(event, context, (ctx, data) => {
       expect(data.statusCode).to.eql(200);
       expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));

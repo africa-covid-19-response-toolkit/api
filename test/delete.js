@@ -30,13 +30,13 @@ describe('Delete tests', () => {
     }
   });
 
-	it('should delete from DB', (done) => {
+  it('should delete from DB', (done) => {
     restore = mockedEnv({
       PASSENGERS_TABLE: 'PassengerReports',
     });
 
     stubDelete.withArgs().yields(null, null);
-    
+
     stubbedHandler.delete(event, context, (ctx, data) => {
       expect(data.statusCode).to.eql(200);
       expect(data.body).to.eql(JSON.stringify({}));

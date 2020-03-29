@@ -24,13 +24,13 @@ describe('Communities tests', () => {
     }
   });
 
-	it('should write to DB', (done) => {
+  it('should write to DB', (done) => {
     restore = mockedEnv({
       COMMUNITY_TABLE: 'CommunityReports'
     });
 
     stubPut.withArgs().yields(null, event.body);
-    
+
     stubbedHandler.create(event, context, (ctx, data) => {
       expect(data.statusCode).to.eql(201);
       expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));

@@ -24,8 +24,8 @@ describe('Create tests', () => {
       restore();
     }
   });
-
-	it('should write to DB', (done) => {
+  
+  it('should write to DB', (done) => {
     restore = mockedEnv({
       PASSENGERS_TABLE: 'PassengerReports',
     });
@@ -57,7 +57,7 @@ describe('Create tests', () => {
     const expectError = new Error('failed to create');
 
     stubPut.withArgs().yields(expectError, null);
-    
+
     stubbedHandler.create(event, context, (ctx, data) => {
       expect(data.statusCode).to.eql(501);
       expect(data.body.message).to.eql('Couldn\'t create the passengers item.');
