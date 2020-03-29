@@ -37,7 +37,7 @@ describe('Get tests', () => {
       expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
       done();
     });
-	});
+  });
 
   it('should fail if table doesnt exist', (done) => {
     stubGet.withArgs().yields(null, event.body);

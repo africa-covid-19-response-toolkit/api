@@ -42,7 +42,7 @@ describe('Delete tests', () => {
       expect(data.body).to.eql(JSON.stringify({}));
       done();
     });
-	});
+  });
 
   it('should fail if table doesnt exist', (done) => {
     stubDelete.withArgs().yields(null, event.body);

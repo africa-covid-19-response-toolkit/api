@@ -41,7 +41,7 @@ describe('Update tests', () => {
       expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
       done();
     });
-	});
+  });
 
   it('should fail if table doesnt exist', (done) => {
     stubUpdate.withArgs().yields(null, event.body);
