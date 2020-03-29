@@ -25,17 +25,17 @@ describe('Communities tests', () => {
   });
 
 	it('should write to DB', (done) => {
-      restore = mockedEnv({
-        COMMUNITY_TABLE: 'CommunityReports'
-      });
+    restore = mockedEnv({
+      COMMUNITY_TABLE: 'CommunityReports'
+    });
 
-      stubPut.withArgs().yields(null, event.body);
-
-			stubbedHandler.create(event, context, (ctx, data) => {
-        expect(data.statusCode).to.eql(201);
-        expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
-        done();
-      });
+    stubPut.withArgs().yields(null, event.body);
+    
+    stubbedHandler.create(event, context, (ctx, data) => {
+      expect(data.statusCode).to.eql(201);
+      expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
+      done();
+    });
 	});
 
   it('should fail if table doesnt exist', (done) => {

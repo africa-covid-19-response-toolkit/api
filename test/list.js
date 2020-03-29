@@ -25,18 +25,18 @@ describe('List tests', () => {
   });
 
 	it('should scan from DB', (done) => {
-      restore = mockedEnv({
-        PASSENGERS_TABLE: 'PassengerReports',
-      });
-      const eventBody = JSON.parse(event.body);
-      const expectedResult = {'Items': {...eventBody}};
-      stubScan.withArgs().yields(null, expectedResult);
-
-			stubbedHandler.list(event, context, (ctx, data) => {
-        expect(data.statusCode).to.eql(200);
-        expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
-        done();
-      });
+    restore = mockedEnv({
+      PASSENGERS_TABLE: 'PassengerReports',
+    });
+    const eventBody = JSON.parse(event.body);
+    const expectedResult = {'Items': {...eventBody}};
+    stubScan.withArgs().yields(null, expectedResult);
+    
+    stubbedHandler.list(event, context, (ctx, data) => {
+      expect(data.statusCode).to.eql(200);
+      expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
+      done();
+    });
 	});
 
   it('should fail if table doesnt exist', (done) => {

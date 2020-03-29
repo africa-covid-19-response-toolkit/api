@@ -27,20 +27,20 @@ describe('Update tests', () => {
   });
 
 	it('should update to DB', (done) => {
-      restore = mockedEnv({
-        PASSENGERS_TABLE: 'PassengerReports',
-      });
+    restore = mockedEnv({
+      PASSENGERS_TABLE: 'PassengerReports',
+    });
 
-      const eventBody = JSON.parse(event.body);
-      const expectedResult = {'Attributes': {...eventBody}};
+    const eventBody = JSON.parse(event.body);
+    const expectedResult = {'Attributes': {...eventBody}};
 
-      stubUpdate.withArgs().yields(null, expectedResult);
-
-			stubbedHandler.update(event, context, (ctx, data) => {
-        expect(data.statusCode).to.eql(200);
-        expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
-        done();
-      });
+    stubUpdate.withArgs().yields(null, expectedResult);
+    
+    stubbedHandler.update(event, context, (ctx, data) => {
+      expect(data.statusCode).to.eql(200);
+      expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
+      done();
+    });
 	});
 
   it('should fail if table doesnt exist', (done) => {

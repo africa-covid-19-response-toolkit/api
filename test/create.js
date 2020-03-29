@@ -26,17 +26,17 @@ describe('Create tests', () => {
   });
 
 	it('should write to DB', (done) => {
-      restore = mockedEnv({
-        PASSENGERS_TABLE: 'PassengerReports',
-      });
+    restore = mockedEnv({
+      PASSENGERS_TABLE: 'PassengerReports',
+    });
 
-      stubPut.withArgs().yields(null, event.body);
+    stubPut.withArgs().yields(null, event.body);
 
-			stubbedHandler.create(event, context, (ctx, data) => {
-        expect(data.statusCode).to.eql(201);
-        expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
-        done();
-      });
+    stubbedHandler.create(event, context, (ctx, data) => {
+      expect(data.statusCode).to.eql(201);
+      expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
+      done();
+    });
 	});
 
   it('should fail if table doesnt exist', (done) => {
@@ -57,7 +57,7 @@ describe('Create tests', () => {
     const expectError = new Error('failed to create');
 
     stubPut.withArgs().yields(expectError, null);
-
+    
     stubbedHandler.create(event, context, (ctx, data) => {
       expect(data.statusCode).to.eql(501);
       expect(data.body.message).to.eql('Couldn\'t create the passengers item.');

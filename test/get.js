@@ -25,18 +25,18 @@ describe('Get tests', () => {
   });
 
 	it('should get from DB', (done) => {
-      restore = mockedEnv({
-        PASSENGERS_TABLE: 'PassengerReports',
-      });
-      const eventBody = JSON.parse(event.body);
-      const expectedResult = {'Item':{...eventBody}};
-      stubGet.withArgs().yields(null, expectedResult);
-
-			stubbedHandler.get(event, context, (ctx, data) => {
-        expect(data.statusCode).to.eql(200);
-        expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
-        done();
-      });
+    restore = mockedEnv({
+      PASSENGERS_TABLE: 'PassengerReports',
+    });
+    const eventBody = JSON.parse(event.body);
+    const expectedResult = {'Item':{...eventBody}};
+    stubGet.withArgs().yields(null, expectedResult);
+    
+    stubbedHandler.get(event, context, (ctx, data) => {
+      expect(data.statusCode).to.eql(200);
+      expect(JSON.parse(data.body)).to.include(JSON.parse(event.body));
+      done();
+    });
 	});
 
   it('should fail if table doesnt exist', (done) => {
