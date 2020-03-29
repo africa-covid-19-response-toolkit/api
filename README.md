@@ -11,31 +11,31 @@ authorAvatar: 'https://avatars3.githubusercontent.com/u/8954908?v=4&s=140'
 -->
 # API for writing/retrieving COVID-19 data
 
-This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. [Covid19.ET](https://github.com/Ethiopia-COVID19/Covid19.ET) project will use it to retrieve data for dashboard and write data
+This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. [covid19.et](https://github.com/Ethiopia-COVID19/Covid19.ET) project will use it to retrieve data for dashboard and write data
 
 
 ## Serverless REST API
 
 This example demonstrates how to setup a [RESTful Web Services](https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services) allowing you to create, list, get, update and delete Community. DynamoDB is used to store the data. This is just an example and of course you could use any data storage as a backend.
 
-## Structure
+## [Structure](#structure)
 
-This service has a separate directory for all the community operations. For each operation exactly one file exists e.g. `communities/delete.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
+This service has a separate directory for all the community operations. For each operation exactly one file exists e.g. `handler/delete.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
 
 The idea behind the `communities` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
 
-## Use-cases
+### Use-cases
 
 - API for a Web Application
 - API for a Mobile Application
 
-## Setup
+### Setup
 
 ```bash
 npm install
 ```
 
-## Deploy
+### Deploy
 
 In order to deploy the endpoint simply run
 
@@ -49,27 +49,8 @@ https://documenter.getpostman.com/view/370266/SzYW3L6e?version=latest
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/64e612b7b58fd9352206)
 
-
-## Scaling
-
-### AWS Lambda
-
-By default, AWS Lambda limits the total concurrent executions across all functions within a given region to 100. The default limit is a safety limit that protects you from costs due to potential runaway or recursive functions during initial development and testing. To increase this limit above the default, follow the steps in [To request a limit increase for concurrent executions](http://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html#increase-concurrent-executions-limit).
-
-### DynamoDB
-
-When you create a table, you specify how much provisioned throughput capacity you want to reserve for reads and writes. DynamoDB will reserve the necessary resources to meet your throughput needs while ensuring consistent, low-latency performance. You can change the provisioned throughput and increasing or decreasing capacity as needed.
-
-This is can be done via settings in the `serverless.yml`.
-
-```yaml
-  ProvisionedThroughput:
-    ReadCapacityUnits: 1
-    WriteCapacityUnits: 1
-```
-
-## Auth Flow
-
+---
+## [Auth Flow](#auth-flow)
 
 ```
 client_id = {value}
@@ -124,10 +105,9 @@ Please note: This API supports the following types:
 - `surveillance`
 - `community-report`
 - `toll-free`
-
+---
 
 ## [Data Structure](#data-structure)
-
 
 ### Community
 ```
@@ -339,4 +319,23 @@ Please note: This API supports the following types:
   "source": "string",
   "formStatus": "string"
 }
+```
+---
+
+## [Scaling](#scaling)
+
+### AWS Lambda
+
+By default, AWS Lambda limits the total concurrent executions across all functions within a given region to 100. The default limit is a safety limit that protects you from costs due to potential runaway or recursive functions during initial development and testing. To increase this limit above the default, follow the steps in [To request a limit increase for concurrent executions](http://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html#increase-concurrent-executions-limit).
+
+### DynamoDB
+
+When you create a table, you specify how much provisioned throughput capacity you want to reserve for reads and writes. DynamoDB will reserve the necessary resources to meet your throughput needs while ensuring consistent, low-latency performance. You can change the provisioned throughput and increasing or decreasing capacity as needed.
+
+This is can be done via settings in the `serverless.yml`.
+
+```yaml
+  ProvisionedThroughput:
+    ReadCapacityUnits: 1
+    WriteCapacityUnits: 1
 ```
