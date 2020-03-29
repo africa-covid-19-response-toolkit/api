@@ -9,7 +9,7 @@ authorLink: 'https://github.com/ozbillwang'
 authorName: 'Bill Wang'
 authorAvatar: 'https://avatars3.githubusercontent.com/u/8954908?v=4&s=140'
 -->
-# API for writing/retrieving Covid19 data
+# API for writing/retrieving COVID-19 data
 
 This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. [Covid19.ET](https://github.com/Ethiopia-COVID19/Covid19.ET) project will use it to retrieve data for dashboard and write data
 
@@ -68,4 +68,275 @@ This is can be done via settings in the `serverless.yml`.
     WriteCapacityUnits: 1
 ```
 
+## Auth Flow
+
+
+```
+client_id = {value}
+client_secret = {value}
+```
+
+Ping @Naod on Slack to get the values above
+
+Generate base64 key by using the `client_id` and `client_secret`
+
+```
+$ echo -n 'client_id:client_secret' | openssl base64
+Node example:
+const AUTHORIZATION_KEY = Buffer.from('process.env.CLIENT_ID:process.env.CLIENT_SECRET').toString('base64')
+```
+
+Send a request to the auth endpoint to get an access token:
+
+```
+curl --location --request POST 'https://ethiopia-covid19.auth.us-east-2.amazoncognito.com/oauth2/token' \
+--header 'Authorization: Basic abc123==' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=client_credentials'
+```
+
+response body:
+
+```
+{
+    "access_token": "long_token_value",
+    "expires_in": 3600,
+    "token_type": "Bearer"
+}
+```
+
+Make a request to the API:
+
+```
+curl --location --request GET 'https://api.ethiopia-covid19.com/gateway/communities' \
+--header 'Authorization: Bearer long_string' \
+--header 'Content-Type: application/json'
+```
+
+Once you authenticate, use the `Access Token` as a `Bearer` authorization using Postman. 
+
 In case you expect a lot of traffic fluctuation we recommend to checkout this guide on how to auto scale DynamoDB [https://aws.amazon.com/blogs/aws/auto-scale-dynamodb-with-dynamic-dynamodb/](https://aws.amazon.com/blogs/aws/auto-scale-dynamodb-with-dynamic-dynamodb/)
+
+Please note: This API supports the following types:
+- `communities`
+- `passengers`
+- `medical-facilities`
+- `surveillance`
+- `community-report`
+- `toll-free`
+
+
+## [Data Structure](#data-structure)
+
+
+### Community
+```
+{
+  "id": "123e4567-e89b-12d3-a456-426655440000",
+  "firstName": "asdfa",
+  "lastName": "asdf",
+  "age": "5",
+  "sex": "Male",
+  "language": "",
+  "region": "Addis Ababa",
+  "subcityOrZone": "",
+  "sefer": "",
+  "woreda": "",
+  "kebele": "",
+  "houseNo": "",
+  "phoneNo": "1231231",
+  "latitude": 38.9071923,
+  "longitude": -77.0368707,
+  "fever": true,
+  "cough": true,
+  "shortnessOfBreath": true,
+  "formStatus": "Incomplete",
+  "travelHx": true,
+  "haveSex": true,
+  "animalMarket": true,
+  "healthFacility": false,
+  "occupation": "Merchant(Animal)",
+  "dataSource": "bot"
+}
+```
+
+### Passengers
+```
+{
+  "id": "123e4567-e89b-12d3-a456-426655440000",
+  "firstName": "asdfas",
+  "middleName": "dasdfas",
+  "lastName": "dasdfasd",
+  "gender": "Female",
+  "dateOfBirth": "0100-01-01",
+  "nationality": "Åland Islands",
+  "passportNo": "asdfasdfa",
+  "travelFrom": "Algeria",
+  "phoneNo": "sdfasdfasdfasdf",
+  "hotelName": "Ghion Hotel",
+  "flightNumber": "asdfas",
+  "seatNumber": "dfasdfasdf",
+  "transitFrom": "Albania",
+  "fever": true,
+  "shortnessOfBreath": true,
+  "cough": true,
+  "dependents": [
+    {
+      "firstName": "asdfasdf",
+      "middleName": "asdfasd",
+      "lastName": "fasdfasd",
+      "gender": "Female",
+      "dateOfBirth": "",
+      "nationality": "Albania",
+      "passportNo": "asdfasdf",
+      "seatNumber": "asdfasdfasda",
+      "fever": true,
+      "shortnessOfBreath": true,
+      "cough": true,
+      "travelFrom": "Algeria",
+      "transitFrom": "Albania",
+      "phoneNo": "sdfasdfasdfasdf",
+      "flightNumber": "asdfas",
+      "selectedLanguage": "English"
+    },
+    {
+      "firstName": "asdfa",
+      "middleName": "sdfasdf",
+      "lastName": "asdfasdfa",
+      "gender": "Female",
+      "dateOfBirth": "3333-03-02",
+      "nationality": "Åland Islands",
+      "passportNo": "asdfasdf",
+      "seatNumber": "asdfasdf",
+      "fever": true,
+      "shortnessOfBreath": true,
+      "cough": true,
+      "travelFrom": "Algeria",
+      "transitFrom": "Albania",
+      "phoneNo": "sdfasdfasdfasdf",
+      "flightNumber": "asdfas",
+      "selectedLanguage": "English"
+    }
+  ],
+  "otherHotelName": "",
+  "email": "asdfasdf@asdfa.com",
+  "language": ""
+}
+```
+
+### Medical Facilities
+```
+{
+  "id": "123e4567-e89b-12d3-a456-426655440000",
+  "firstName": "string",
+  "middleName": "string",
+  "lastName": "string",
+  "nationality": "string",
+  "email": "string",
+  "sex": "string",
+  "age": 0,
+  "region": "string",
+  "subcity": "string",
+  "zone": "string",
+  "woreda": "string",
+  "kebele": "string",
+  "houseNumber": "string",
+  "phoneNumber": "string",
+  "occupation": "string",
+  "callDate": "2020-03-29T00:52:45.527Z",
+  "callerType": "string",
+  "fever": true,
+  "cough": true,
+  "headache": true,
+  "runnyNose": true,
+  "feelingUnwell": true,
+  "shortnessOfBreath": true,
+  "bodyPain": true,
+  "travelHx": true,
+  "haveSex": true,
+  "animalMarket": true,
+  "healthFacility": true,
+  "receiverName": "string",
+  "source": "string",
+  "formStatus": "string"
+}
+```
+
+### Toll Free
+```
+{
+  "firstName": "string",
+  "middleName": "string",
+  "lastName": "string",
+  "gender": "male",
+  "phoneNumber": "string",
+  "secondPhoneNumber": "string",
+  "age": "23",
+  "region": "string",
+  "subcity": "string",
+  "zone": "string",
+  "woreda": "string",
+  "kebele": "string",
+  "city": "23",
+  "reportType": "Transmission Mode",
+  "rumorTypes": [
+    {
+      "id": 2,
+      "name": "Cough",
+      "description": null,
+      "createdAt": "2020-03-26 07:57:59",
+      "updatedAt": "2020-03-26 07:57:59",
+      "deletedAt": null
+    },
+    {
+      "id": 3,
+      "name": "Headache",
+      "description": null,
+      "createdAt": "2020-03-26 07:57:59",
+      "updatedAt": "2020-03-26 07:57:59",
+      "deletedAt": null
+    }
+  ],
+  "travelHx": true,
+  "haveSex": true,
+  "description": "description description"
+}
+```
+
+### Surveillance
+```
+{
+  "id": "123e4567-e89b-12d3-a456-426655440000",
+  "firstName": "string",
+  "middleName": "string",
+  "lastName": "string",
+  "nationality": "string",
+  "email": "string",
+  "sex": "string",
+  "age": 0,
+  "region": "string",
+  "subcity": "string",
+  "zone": "string",
+  "woreda": "string",
+  "kebele": "string",
+  "houseNumber": "string",
+  "phoneNumber": "string",
+  "occupation": "string",
+  "callDate": "2020-03-29T00:52:45.527Z",
+  "callerType": "string",
+  "fever": true,
+  "cough": true,
+  "headache": true,
+  "runnyNose": true,
+  "feelingUnwell": true,
+  "shortnessOfBreath": true,
+  "bodyPain": true,
+  "travelHx": true,
+  "haveSex": true,
+  "animalMarket": true,
+  "healthFacility": true,
+  "receiverName": "string",
+  "source": "string",
+  "formStatus": "string"
+}
+```
