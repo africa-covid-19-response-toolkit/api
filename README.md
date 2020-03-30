@@ -245,41 +245,98 @@ Please note: This API supports the following types:
 ### Toll Free
 ```
 {
+  "id": "123e4567-e89b-12d3-a456-426655440000",
   "firstName": "string",
   "middleName": "string",
   "lastName": "string",
-  "gender": "male",
-  "phoneNumber": "string",
-  "secondPhoneNumber": "string",
-  "age": "23",
-  "region": "string",
-  "subcity": "string",
-  "zone": "string",
-  "woreda": "string",
-  "kebele": "string",
-  "city": "23",
-  "reportType": "Transmission Mode",
-  "rumorTypes": [
-    {
-      "id": 2,
-      "name": "Cough",
+  "age": 26,
+  "gender": "Male",
+  "reportRegion": {
+    "id": 1,
+    "name": "string"
+  },
+  "region": {
+    "id": 9,
+    "name": "SNNP Regional State",
+    "latitude": 9.005401,
+    "longitude": 38.763611,
+    "description": null,
+    "createdAt": "2020-03-29T11:09:10+03:00",
+    "updatedAt": "2020-03-29T11:09:10+03:00",
+    "deletedAt": null
+  },
+  "zone": {
+    "id": 1,
+    "name": "string"
+  },
+  "woreda": {
+    "id": 1,
+    "name": "string"
+  },
+  "city": {
+    "id": 1,
+    "name": "string"
+  },
+  "subcity": {
+    "id": 1,
+    "name": "string"
+  },
+  "kebele": {
+    "id": 1,
+    "name": "string"
+  },
+  "createdBy": {
+    "id": 1,
+    "firstName": "string",
+    "middleName": "string",
+    "lastName": "string",
+    "email": "george.beng@gmail.com",
+    "phoneNumber": "string",
+    "region": {
+      "id": 9,
+      "name": "SNNP Regional State",
+      "latitude": 9.005401,
+      "longitude": 38.763611,
       "description": null,
-      "createdAt": "2020-03-26 07:57:59",
-      "updatedAt": "2020-03-26 07:57:59",
+      "createdAt": "2020-03-29T11:09:10+03:00",
+      "updatedAt": "2020-03-29T11:09:10+03:00",
       "deletedAt": null
     },
-    {
-      "id": 3,
-      "name": "Headache",
-      "description": null,
-      "createdAt": "2020-03-26 07:57:59",
-      "updatedAt": "2020-03-26 07:57:59",
-      "deletedAt": null
-    }
-  ],
+    "role": {
+      "id": 1,
+      "name": "string"
+    },
+    "callCenter": {
+      "id": 1,
+      "name": "string"
+    },
+    "active": true,
+    "emailVerifiedAt": null,
+    "createdAt": "2020-03-29T11:09:10+03:00",
+    "updatedAt": "2020-03-29T11:09:10+03:00",
+    "deletedAt": null
+  },
+  "phoneNumber": "251911241285",
+  "secondPhoneNumber": "string",
+  "occupation": null,
+  "callerType": null,
+  "other": null,
+  "reportType": "Sign-Symptom",
+  "reportGroup": {
+    "id": 1,
+    "name": "string"
+  },
+  "description": null,
+  "remark1": null,
+  "remark2": null,
   "travelHx": true,
   "haveSex": true,
-  "description": "description description"
+  "visitedAnimal": true,
+  "visitedHf": false,
+  "createdAt": "2020-03-29T11:09:10+03:00",
+  "updatedAt": "2020-03-29T11:09:10+03:00",
+  "deletedAt": null,
+  "rumorTypes": []
 }
 ```
 
