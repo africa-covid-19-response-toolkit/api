@@ -28,7 +28,7 @@ module.exports = {
     occupation: Joi.string(),
     dataSource: Joi.string(),
   }),
-  passengers: {
+  passengers: Joi.object({
     id: Joi.string(),
     firstName: Joi.string(),
     middleName: Joi.string(),
@@ -69,8 +69,8 @@ module.exports = {
     otherHotelName: Joi.string(),
     email: Joi.string().email(),
     language: Joi.string(),
-  },
-  'medical-facilities': {
+  }),
+  'medical-facilities': Joi.object({
     id: Joi.string(),
     firstName: Joi.string(),
     middleName: Joi.string(),
@@ -103,8 +103,8 @@ module.exports = {
     receiverName: Joi.string(),
     source: Joi.string(),
     formStatus: Joi.string(),
-  },
-  surveillance: {
+  }),
+  surveillance: Joi.object({
     id: Joi.string(),
     firstName: Joi.string(),
     middleName: Joi.string(),
@@ -137,8 +137,8 @@ module.exports = {
     receiverName: Joi.string(),
     source: Joi.string(),
     formStatus: Joi.string(),
-  },
-  'toll-free': {
+  }),
+  'toll-free': Joi.object({
     id: Joi.string(),
     firstName: Joi.string(),
     middleName: Joi.string(),
@@ -224,5 +224,5 @@ module.exports = {
     updatedAt: Joi.date(),
     deletedAt: Joi.date(),
     rumorTypes: Joi.array().items(Joi.object({})),
-  },
+  }),
 };
