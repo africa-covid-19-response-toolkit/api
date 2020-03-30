@@ -1,13 +1,10 @@
 <!--
-title: 'AWS Serverless REST API example in NodeJS'
-description: 'This example demonstrates how to setup a RESTful Web Service allowing you to create, list, get, update and delete Community. DynamoDB is used to store the data.'
+title: 'Ethiopia COVID-19 API Gateway'
+description: 'This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. covid19.et project will use it to retrieve data for dashboard and write data.'
 layout: Doc
 framework: v1
 platform: AWS
 language: nodeJS
-authorLink: 'https://github.com/ozbillwang'
-authorName: 'Bill Wang'
-authorAvatar: 'https://avatars3.githubusercontent.com/u/8954908?v=4&s=140'
 -->
 # API for writing/retrieving COVID-19 data
 
