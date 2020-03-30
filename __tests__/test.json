@@ -1,0 +1,8 @@
+{
+    "queryStringParameters": {
+        "Woreda_eq": "TOLL FREE"
+    },
+    "pathParameters": {
+        "type": "communities"
+    }
+}

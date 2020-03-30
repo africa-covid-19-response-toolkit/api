@@ -71,17 +71,17 @@ module.exports.prepareFilterParams = queryStringParameters => {
     const operator = this.getFilterOperator(key.split('_')[1]);
 
     // Add ExpressionAttributeNames
-    ExpressionAttributeNames[`#${key}`] = `${field}`;
+    ExpressionAttributeNames[`#${field}`] = `${field}`;
 
     // ExpressionAttributeValues
-    ExpressionAttributeValues[`:${key}`] = queryValue;
+    ExpressionAttributeValues[`:${field}`] = queryValue;
 
     // FilterExpression
     if (FilterExpression) {
       FilterExpression =
-        `${FilterExpression} ` + 'AND' + ` #${key} ${operator} :${key}`;
+        `${FilterExpression} AND #${field} ${operator} :${field}`;
     } else {
-      FilterExpression = `#${key} ${operator} :${key}`;
+      FilterExpression = `#${field} ${operator} :${field}`;
     }
   }
 
