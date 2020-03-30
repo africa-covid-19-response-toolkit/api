@@ -29,7 +29,11 @@ module.exports.prepUpdateParams = (data, ReturnValues = 'ALL_NEW') => {
   const structure = [];
 
   for (const key in data) {
+    // Ignore id since it's automatically generated.
     if (key === 'id') continue;
+    // Ignore createdAt, we don't update this.
+    if (key === 'createdAt') continue;
+
     const attr = `#attr_${key}`;
     ExpressionAttributeNames[attr] = `${key}`;
     ExpressionAttributeValues[`:${key}`] = data[key];
@@ -61,7 +65,7 @@ module.exports.prepareFilterParams = queryStringParameters => {
     // ValidationException: ExpressionAttributeValues contains
     // invalid value: One or more parameter values were invalid:
     // An AttributeValue may not contain an empty string.
-    // if (isEmpty(queryValue)) continue;
+    if (isEmpty(queryValue)) continue;
 
     const field = key.split('_')[0] || key;
     const operator = this.getFilterOperator(key.split('_')[1]);
