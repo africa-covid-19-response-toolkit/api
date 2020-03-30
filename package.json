@@ -5,11 +5,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.15",
-    "uuid": "^7.0.2",
+    "@hapi/joi": "^17.1.1",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",
-    "request": "^2.88.2"
+    "lodash": "^4.17.15",
+    "request": "^2.88.2",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "serverless-domain-manager": "^3.3.1"
