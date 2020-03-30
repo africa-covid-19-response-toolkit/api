@@ -159,7 +159,6 @@ module.exports = {
       updatedAt: Joi.date(),
       deletedAt: Joi.date(),
     }),
-
     zone: Joi.object({
       id: Joi.number(),
       name: Joi.string(),
@@ -181,6 +180,12 @@ module.exports = {
       name: Joi.string(),
     }),
     createdBy: Joi.object({
+      id: Joi.number(),
+      firstName: Joi.string(),
+      middleName: Joi.string(),
+      lastName: Joi.string(),
+      email: Joi.string().email(),
+      phoneNumber: Joi.string(),
       region: Joi.object({
         id: Joi.number(),
         firstName: Joi.string(),
