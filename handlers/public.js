@@ -1,6 +1,6 @@
 'use strict';
 
-const uuidv4 = require('uuid/v4');
+const { v4 } = require('uuid');
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 const { removeEmptyStringElements, getTable } = require('../helpers');
 
@@ -16,7 +16,9 @@ module.exports.create = (event, context, callback) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: { message: `Unknown type provided. Type name: communities` },
+      body: JSON.stringify({
+        message: `Unknown type provided. Type name: communities`,
+      }),
     });
 
   const timestamp = new Date().getTime();
@@ -27,7 +29,7 @@ module.exports.create = (event, context, callback) => {
     TableName: table,
     Item: {
       ...removeEmptyStringElements(data),
-      id: uuidv4(),
+      id: v4(),
       createdAt: timestamp,
       updatedAt: timestamp,
     },
