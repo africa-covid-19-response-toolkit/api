@@ -24,19 +24,33 @@ module.exports.get = (event, context, callback) => {
     });
   }
 
+  const commonParams = {
+    TableName: table,
+  }
+  
   if (queryStringParameters) {
     const scanFilter = {};
-    Object.keys(queryStringParameters).forEach((key) => {
-      scanFilter[key] = {
-        ComparisonOperator: 'EQ',
+    // e.g. firstName_eq=test
+    for (queryPram in queryStringParameters) {
+      // Default to equals if no comparison param passed
+      let comparisonOperator = 'EQ'
+      let attributeName = queryPram
+      if (/_/.test(queryPram)) {
+        // assume last suffix after "_" is the comparison operator
+        const _comparisonOperator = queryPram.split('_').pop()
+        attributeName = attributeName.replace(`_${_comparisonOperator}`)
+        comparisonOperator = _comparisonOperator.toUpperCase()
+      }
+      scanFilter[queryPram] = {
+        ComparisonOperator: comparisonOperator,
         AttributeValueList: [
-          queryStringParameters[key]
+          queryStringParameters[queryPram]
         ]
       }
-    });
+    };
 
     const filterParams = {
-      TableName: table,
+      ...commonParams,
       ScanFilter: scanFilter
     }
 
@@ -67,7 +81,7 @@ module.exports.get = (event, context, callback) => {
   }
 
   const params = {
-    TableName: table,
+    ...commonParams,
     Key: {
       id,
     },
