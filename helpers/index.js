@@ -59,14 +59,15 @@ module.exports.prepareFilterParams = queryStringParameters => {
   let FilterExpression = '';
 
   for (const key in queryStringParameters) {
-    const queryValue = queryStringParameters[key];
+    const queryValue = queryStringParameters[`${key}`];
 
     // Added to avoid:
     // ValidationException: ExpressionAttributeValues contains
     // invalid value: One or more parameter values were invalid:
     // An AttributeValue may not contain an empty string.
-    if (isEmpty(queryValue)) continue;
 
+    if (!queryValue) continue;
+    console.log({ key });
     const field = key.split('_')[0] || key;
     const operator = this.getFilterOperator(key.split('_')[1]);
 

@@ -46,7 +46,7 @@ module.exports.create = async (event, context, callback) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: ` ${type} validation error occurred. ${error.message}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`,
+          message: `${type} validation error occurred. ${error.message}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`,
         }),
       });
       return;
