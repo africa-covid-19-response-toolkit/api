@@ -36,32 +36,9 @@ module.exports.get = (event, context, callback) => {
       ...filterParams
     }
 
-    console.log('~~~~>>>', scanParams);
-
     // TODO: can we use something other than scan?
-    dynamoDb.scan(scanParams, (error, result) => {
-      // handle potential errors
-      if (error) {
-        console.error(error);
-        callback(null, {
-          statusCode: error.statusCode || 501,
-          headers: { 'Content-Type': 'text/plain' },
-          body: { message: `Couldn't fetch the ${type} item.` },
-        });
-        return;
-      }
-  
-      // create a response
-      const response = {
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(result.Item || {}),
-      };
-      callback(null, response);
-    });
+    dynamoDb.scan(scanParams, handleResponse);
+    return
   }
 
   const params = {
@@ -72,27 +49,30 @@ module.exports.get = (event, context, callback) => {
   };
 
   // fetch {type} from the database
-  dynamoDb.get(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'text/plain' },
-        body: { message: `Couldn't fetch the ${type} item.` },
-      });
-      return;
-    }
-
-    // create a response
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(result.Item || {}),
-    };
-    callback(null, response);
-  });
+  dynamoDb.get(params, handleResponse);
 };
+
+
+const handleResponse = (error, result) => {
+   // handle potential errors
+   if (error) {
+    console.error(error);
+    callback(null, {
+      statusCode: error.statusCode || 501,
+      headers: { 'Content-Type': 'text/plain' },
+      body: { message: `Couldn't fetch the ${type} item.` },
+    });
+    return;
+  }
+
+  // create a response
+  const response = {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(result.Item || {}),
+  };
+  callback(null, response);
+}
