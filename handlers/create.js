@@ -38,7 +38,8 @@ module.exports.create = async (event, context, callback) => {
 
     try {
       // Validate data.
-      if (!isEmpty(schema[type])) data = await schema[type].validateAsync(data);
+      if (!isEmpty(schema[type]))
+        data = await schema[type].validateAsync(data, { stripUnknown: true });
     } catch (error) {
       callback(null, {
         statusCode: error.statusCode || 500,
