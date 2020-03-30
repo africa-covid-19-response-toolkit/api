@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 
-module.exports.schema = {
+module.exports = {
   communities: Joi.object({
     id: Joi.string(),
     firstName: Joi.string(),
