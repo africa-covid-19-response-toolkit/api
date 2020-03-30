@@ -1,7 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable } = require('../helpers');
+const { getTable, prepareFilterParams } = require('../helpers');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -29,33 +29,17 @@ module.exports.get = (event, context, callback) => {
   }
   
   if (queryStringParameters) {
-    const scanFilter = {};
-    // e.g. firstName_eq=test
-    for (queryPram in queryStringParameters) {
-      // Default to equals if no comparison param passed
-      let comparisonOperator = 'EQ'
-      let attributeName = queryPram
-      if (/_/.test(queryPram)) {
-        // assume last suffix after "_" is the comparison operator
-        const _comparisonOperator = queryPram.split('_').pop()
-        attributeName = attributeName.replace(`_${_comparisonOperator}`)
-        comparisonOperator = _comparisonOperator.toUpperCase()
-      }
-      scanFilter[queryPram] = {
-        ComparisonOperator: comparisonOperator,
-        AttributeValueList: [
-          queryStringParameters[queryPram]
-        ]
-      }
-    };
+    const filterParams = prepareFilterParams(queryStringParameters);
 
-    const filterParams = {
+    const scanParams = {
       ...commonParams,
-      ScanFilter: scanFilter
+      ...filterParams
     }
 
+    console.log('~~~~>>>', scanParams);
+
     // TODO: can we use something other than scan?
-    dynamoDb.scan(filterParams, (error, result) => {
+    dynamoDb.scan(scanParams, (error, result) => {
       // handle potential errors
       if (error) {
         console.error(error);
