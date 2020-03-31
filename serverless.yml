@@ -11,11 +11,16 @@ provider:
   region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
   runtime: nodejs12.x
   environment:
-    COMMUNITY_TABLE: CommunityReports
-    PASSENGERS_TABLE: PassengerReports
-    MEDICAL_FACILITY_TABLE: MedicalFacilityReports
-    SURVEILLANCE_TABLE: SurveillanceReports
-    TOLL_FREE_TABLE: TollFreeReports
+    COMMUNITY_TABLE: 
+        Fn::ImportValue: api-gateway-${opt:stage}-CommunityReportsTable
+    PASSENGERS_TABLE: 
+        Fn::ImportValue: api-gateway-${opt:stage}-PassengerReportsTable
+    MEDICAL_FACILITY_TABLE: 
+        Fn::ImportValue: api-gateway-${opt:stage}-MedicalFacilityReportsTable
+    SURVEILLANCE_TABLE: 
+        Fn::ImportValue: api-gateway-${opt:stage}-SurveillanceReportsTable
+    TOLL_FREE_TABLE: 
+        Fn::ImportValue: api-gateway-${opt:stage}-TollFreeReportsTable
     AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
     DOMAIN_NAME: ethiopia-covid19.com
 
