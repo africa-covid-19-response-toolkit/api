@@ -27,6 +27,8 @@ module.exports = {
     healthFacility: Joi.boolean(),
     occupation: Joi.string(),
     dataSource: Joi.string(),
+    createdAt: Joi.date(),
+    updatedAt: Joi.date(),
   }),
   passengers: Joi.object({
     id: Joi.string(),
@@ -69,6 +71,8 @@ module.exports = {
     otherHotelName: Joi.string(),
     email: Joi.string().email(),
     language: Joi.string(),
+    createdAt: Joi.date(),
+    updatedAt: Joi.date(),
   }),
   'medical-facilities': Joi.object({
     id: Joi.string(),
@@ -103,6 +107,8 @@ module.exports = {
     receiverName: Joi.string(),
     source: Joi.string(),
     formStatus: Joi.string(),
+    createdAt: Joi.date(),
+    updatedAt: Joi.date(),
   }),
   surveillance: Joi.object({
     id: Joi.string(),
@@ -137,6 +143,8 @@ module.exports = {
     receiverName: Joi.string(),
     source: Joi.string(),
     formStatus: Joi.string(),
+    createdAt: Joi.date(),
+    updatedAt: Joi.date(),
   }),
   'toll-free': Joi.object({
     id: Joi.string(),

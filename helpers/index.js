@@ -72,7 +72,7 @@ module.exports.prepareFilterParams = (queryStringParameters, type) => {
     const filter = { [`${field}`]: queryStringParameters[key] };
 
     // Validate filters against schema.
-    const { error } = schema[type].validate(filter);
+    const { value: validated, error } = schema[type].validate(filter);
 
     if (error)
       throw new Error(
@@ -84,8 +84,10 @@ module.exports.prepareFilterParams = (queryStringParameters, type) => {
     // Add ExpressionAttributeNames
     ExpressionAttributeNames[`#${key}`] = `${field}`;
 
-    // ExpressionAttributeValues
-    ExpressionAttributeValues[`:${key}`] = queryValue;
+    // ExpressionAttributeValues, set data from the validated filter instead original queryStringParameters
+    // Everything value coming in through queryStringParameters is a string. During validation, '44' becomes 44 and 'true' becomes true.
+    // Therefore the validated filter values have proper type.
+    ExpressionAttributeValues[`:${key}`] = validated[field];
 
     // FilterExpression
     if (FilterExpression) {

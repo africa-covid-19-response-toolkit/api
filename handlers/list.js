@@ -61,8 +61,14 @@ module.exports.list = async (event, context, callback) => {
       })
     );
 
-    const start = parseInt(queryStringParameters._start) || 0;
-    const limit = parseInt(queryStringParameters._limit) || 0;
+    const start =
+      queryStringParameters && queryStringParameters._start
+        ? parseInt(queryStringParameters._start) || 0
+        : 0;
+    const limit =
+      queryStringParameters && queryStringParameters._limit
+        ? parseInt(queryStringParameters._limit) || 0
+        : 0;
 
     // Since we have the entire data paginate using array slice.
     // TODO: Find a better solution or consider using other DB with OFFSET capability.
