@@ -2,9 +2,7 @@
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 const { getTable, prepareFilterParams } = require('../helpers');
-const { isEmpty } = require('lodash');
-
-const schema = require('../schema');
+const { isEmpty, slice } = require('lodash');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -13,30 +11,6 @@ module.exports.list = async (event, context, callback) => {
     pathParameters: { type },
     queryStringParameters,
   } = event;
-
-  // Collect validated filters
-  const validatedFilters = {};
-
-  // Validate filters.
-  try {
-    for (const key in queryStringParameters) {
-      const field = key.split('_')[0] || key;
-      const filter = { [`${field}`]: queryStringParameters[key] };
-      const validatedFiler = await schema[type].validateAsync(filter);
-      validatedFilters[key] = validatedFiler[field];
-    }
-  } catch (error) {
-    callback(null, {
-      statusCode: error.statusCode || 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: `Invalid filter. ${error.message}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`,
-      }),
-    });
-    return;
-  }
 
   const table = getTable(type);
 
@@ -57,13 +31,46 @@ module.exports.list = async (event, context, callback) => {
 
   try {
     // Prepare filter parameters.
-    const filterParams = prepareFilterParams(validatedFilters);
+    try {
+      const filterParams = prepareFilterParams(queryStringParameters, type);
+      if (!isEmpty(filterParams)) params = { ...params, ...filterParams };
+    } catch (error) {
+      callback(null, {
+        statusCode: error.statusCode || 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(error.message),
+      });
+      return;
+    }
 
-    if (!isEmpty(filterParams)) params = { ...params, ...filterParams };
+    let results = [];
 
-    const { Items = [], Count = 0, ScannedCount = 0 } = await dynamoDb
-      .scan(params)
-      .promise();
+    const unfoldAsync = (transform, initial) =>
+      transform(initial).then(next => next && unfoldAsync(transform, next));
+
+    // Recursively scan for all documents.
+    // DynamoDB Scan only limits to 1MB of data so in order to get all,
+    // Do it recursively.
+    // TODO: Find a better approach.
+    await unfoldAsync(lastEvaluatedKey =>
+      scan(params, lastEvaluatedKey).then(data => {
+        results = [...results, ...data.Items];
+        return data.LastEvaluatedKey;
+      })
+    );
+
+    const start = parseInt(queryStringParameters._start) || 0;
+    const limit = parseInt(queryStringParameters._limit) || 0;
+
+    // Since we have the entire data paginate using array slice.
+    // TODO: Find a better solution or consider using other DB with OFFSET capability.
+    const result = slice(results, start, start + limit || results.length);
+    const resultObject = {
+      count: result.length || 0,
+      result: result || [],
+    };
 
     const response = {
       statusCode: 200,
@@ -71,8 +78,7 @@ module.exports.list = async (event, context, callback) => {
         'Content-Type': 'application/json',
       },
 
-      // body: JSON.stringify({ count: Count, items: Items, total: ScannedCount }),
-      body: JSON.stringify([...(Items || [])]),
+      body: JSON.stringify(resultObject),
     };
     callback(null, response);
   } catch (error) {
@@ -87,35 +93,11 @@ module.exports.list = async (event, context, callback) => {
   }
 };
 
-// const scan = async (params, enforcedLimit, resultSet = []) => {
-//   const {
-//     Items = [],
-//     Count = 0,
-//     ScannedCount = 0,
-//     LastEvaluatedKey = null,
-//   } = await dynamoDb.scan(params).promise();
-
-//   // let count = count + Count;
-//   // let total = ScanCount0;
-
-//   const result = [...resultSet, ...Items];
-
-//   // Determine if we need to fetch more items
-//   const noEnforcedLimit = !enforcedLimit;
-
-//   const enforcedLimitNotReached =
-//     enforcedLimit && result.length < enforcedLimit;
-//   const shouldGetMoreItems =
-//     LastEvaluatedKey && noEnforcedLimit && enforcedLimitNotReached;
-
-//   if (shouldGetMoreItems) {
-//     const updatedParams = {
-//       ...params,
-//       ExclusiveStartKey: scanResult.LastEvaluatedKey,
-//     };
-//     await scan(updatedParams, [...resultSet, ...scanResult.Items]);
-//   }
-
-//   // Discard items if there are more than we want
-//   return enforcedLimit ? result.slice(0, enforcedLimit) : result;
-// };
+const scan = (params, lastEvaluatedKey) =>
+  dynamoDb
+    .scan({
+      ...params,
+      Limit: 50,
+      ExclusiveStartKey: lastEvaluatedKey,
+    })
+    .promise();

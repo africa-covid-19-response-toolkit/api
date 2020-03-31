@@ -1,4 +1,5 @@
 const { isEmpty } = require('lodash');
+const schema = require('../schema');
 
 /**
  * Helper function to avoid:
@@ -50,7 +51,7 @@ module.exports.prepUpdateParams = (data, ReturnValues = 'ALL_NEW') => {
 };
 
 // Prepare filter parameters.
-module.exports.prepareFilterParams = queryStringParameters => {
+module.exports.prepareFilterParams = (queryStringParameters, type) => {
   if (isEmpty(queryStringParameters)) return null;
 
   let params = {};
@@ -61,14 +62,23 @@ module.exports.prepareFilterParams = queryStringParameters => {
   for (const key in queryStringParameters) {
     const queryValue = queryStringParameters[`${key}`];
 
-    // Added to avoid:
-    // ValidationException: ExpressionAttributeValues contains
-    // invalid value: One or more parameter values were invalid:
-    // An AttributeValue may not contain an empty string.
+    // Filters starting with _ are not type related.
+    // e.g _start, _limit, _sort....
+    if (key.startsWith('_')) continue;
 
     if (!queryValue) continue;
-    console.log({ key });
+
     const field = key.split('_')[0] || key;
+    const filter = { [`${field}`]: queryStringParameters[key] };
+
+    // Validate filters against schema.
+    const { error } = schema[type].validate(filter);
+
+    if (error)
+      throw new Error(
+        `${field} is not a valid filter for type: ${type}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`
+      );
+
     const operator = this.getFilterOperator(key.split('_')[1]);
 
     // Add ExpressionAttributeNames
