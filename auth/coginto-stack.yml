@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cognito Stack
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+  Domain:
+    Type: String
+    Description: The domain name auth client
+    Default: et-covid19
+
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub '${Stage}-user-pool'
+
+  ResourceServer:
+    Type: AWS::Cognito::UserPoolResourceServer
+    Properties:
+      UserPoolId: !Ref UserPool
+      Identifier: transactions
+      Name: transactions
+      Scopes:
+        - ScopeName: post
+          ScopeDescription: post_tx
+        - ScopeName: get
+          ScopeDescription: get_tx
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: OAuthClient
+      GenerateSecret: True
+      AllowedOAuthScopes:
+        - transactions/post
+      AllowedOAuthFlowsUserPoolClient: True
+      AllowedOAuthFlows:
+        - client_credentials
+  PoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref Domain
+      UserPoolId: !Ref UserPool
+
+Outputs:
+  OauthTokenUrl:
+    Value:
+      !Sub 'https://${Domain}.auth.${AWS::Region}.amazoncognito.com'
+    Export:
+      Name: !Sub '${Stage}-oauth-token-url'
