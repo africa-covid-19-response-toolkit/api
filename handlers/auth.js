@@ -33,6 +33,13 @@ const generatePolicy = (principalId, effect, resource) => {
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
 module.exports.authorize = (event, context, cb) => {
   console.log('Auth function invoked');
+  
+  // bypass auth for local testing
+  if (process.env.IS_OFFLINE) {
+    cb(null, generatePolicy('test', 'Allow', '*'));
+    return
+  }
+  
   if (event.authorizationToken) {
     // Remove 'bearer ' from token:
     const token = event.authorizationToken.substring(7);
