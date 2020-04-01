@@ -4,15 +4,25 @@
   "description": "Serverless CRUD service exposing a REST HTTP interface",
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "dev": "IS_OFFLINE=true && serverless offline start -s dev",
+    "debug": "export SLS_DEBUG=* IS_OFFLINE=true && node --inspect-brk=9229 ./node_modules/.bin/serverless offline start -s dev",
+    "postinstall": "serverless dynamodb install"
+  },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",
     "lodash": "^4.17.15",
     "request": "^2.88.2",
+    "sls": "^0.1.0",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
-    "serverless-domain-manager": "^3.3.1"
+    "serverless": "^1.67.0",
+    "serverless-domain-manager": "^3.3.1",
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^6.1.2",
+    "dynamodb": "^1.2.1"
   }
 }

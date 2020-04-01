@@ -4,6 +4,8 @@ frameworkVersion: '>=1.1.0 <2.0.0'
 
 plugins:
   - serverless-domain-manager
+  - serverless-offline
+  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -114,11 +116,25 @@ functions:
                 type: true
                 id: true
 
-# Adds the Custom DNS Name for API Gateway
 custom:
+  # Adds the Custom DNS Name for API Gateway
   customDomain:
     domainName: 'api.${self:provider.environment.DOMAIN_NAME}'
     basePath: ''
     stage: ${self:provider.stage}
     certificateName: '*.${self:provider.environment.DOMAIN_NAME}'
     createRoute53Record: false
+
+  # Sets up local version of dynamodb for testing
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+resources:
+  ${file(./dynamodb.yml)}

@@ -1,10 +1,10 @@
 'use strict';
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable, prepareFilterParams } = require('../helpers');
+const { getTable, prepareFilterParams, getDynamoDBOptions } = require('../helpers');
 const { isEmpty, slice } = require('lodash');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = new AWS.DynamoDB.DocumentClient(getDynamoDBOptions());
 
 module.exports.list = async (event, context, callback) => {
   const {
