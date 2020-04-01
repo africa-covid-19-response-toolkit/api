@@ -21,7 +21,8 @@ provider:
         Fn::ImportValue: api-gateway-${opt:stage}-SurveillanceReportsTable
     TOLL_FREE_TABLE: 
         Fn::ImportValue: api-gateway-${opt:stage}-TollFreeReportsTable
-    AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
+    AUTH_ISS:
+        Fn::ImportValue: ${opt:stage}-oauth-token-url
     DOMAIN_NAME: ethiopia-covid19.com
 
   iamRoleStatements:
