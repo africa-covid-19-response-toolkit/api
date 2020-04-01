@@ -44,7 +44,6 @@ const PassengerSchema = new Schema(
       type: String,
       lowercase: true,
       match: [/\S+@\S+\.\S+/, 'is invalid'],
-      index: true,
     },
     language: { type: String },
   },
