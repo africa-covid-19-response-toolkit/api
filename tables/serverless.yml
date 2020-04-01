@@ -1,0 +1,109 @@
+service: ethiopia-covid-19-gateway-tables
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
+  region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
+  environment:
+    READ_CAPACITY_UNITS: 10
+    WRITE_CAPACITY_UNITS: 10
+    COMMUNITY_TABLE: CommunityReports
+    PASSENGERS_TABLE: PassengerReports
+    MEDICAL_FACILITY_TABLE: MedicalFacilityReports
+    SURVEILLANCE_TABLE: SurveillanceReports
+    TOLL_FREE_TABLE: TollFreeReports
+
+resources:
+  Resources:
+    PassengerReports: 
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:provider.environment.READ_CAPACITY_UNITS}
+          WriteCapacityUnits: ${self:provider.environment.WRITE_CAPACITY_UNITS}
+        TableName: ${self:provider.environment.PASSENGERS_TABLE}-${self:provider.stage}
+    CommunityReports:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:provider.environment.READ_CAPACITY_UNITS}
+          WriteCapacityUnits: ${self:provider.environment.WRITE_CAPACITY_UNITS}
+        TableName: ${self:provider.environment.COMMUNITY_TABLE}-${self:provider.stage}
+    MedicalFacilityReports: 
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:provider.environment.READ_CAPACITY_UNITS}
+          WriteCapacityUnits: ${self:provider.environment.WRITE_CAPACITY_UNITS}
+        TableName: ${self:provider.environment.MEDICAL_FACILITY_TABLE}-${self:provider.stage}
+    SurveillanceReports:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:provider.environment.READ_CAPACITY_UNITS}
+          WriteCapacityUnits: ${self:provider.environment.WRITE_CAPACITY_UNITS}
+        TableName: ${self:provider.environment.SURVEILLANCE_TABLE}-${self:provider.stage}
+    TollFreeReports:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:provider.environment.READ_CAPACITY_UNITS}
+          WriteCapacityUnits: ${self:provider.environment.WRITE_CAPACITY_UNITS}
+        TableName: ${self:provider.environment.TOLL_FREE_TABLE}-${self:provider.stage}
+
+Outputs:
+  oPassengerReports:
+    Value: !Ref PassengerReports
+    Export:
+      Name: ${self:service}-${opt:stage}-PassengerReportsTable
+  oCommunityReports:
+    Value: !Ref CommunityReports
+    Export:
+      Name: api-gateway-${opt:stage}-CommunityReportsTable
+  oSurveillanceReports:
+    Value: !Ref SurveillanceReports
+    Export:
+      Name: api-gateway-${opt:stage}-SurveillanceReportsTable
+  oMedicalFacilityReports:
+    Value: !Ref  MedicalFacilityReports
+    Export:
+      Name: api-gateway-${opt:stage}-MedicalFacilityReportsTable
+  oTollFreeReports:
+    Value: !Ref TollFreeReports
+    Export:
+      Name: api-gateway-${opt:stage}-TollFreeReportsTable
