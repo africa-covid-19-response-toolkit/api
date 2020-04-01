@@ -8,6 +8,10 @@ Parameters:
     Type: String
     Description: The domain name auth client
     Default: et-covid19
+  ResourceIdentifier:
+    Type: String
+    Description: The domain name auth client
+    Default: https://api.ethiopia-covid19.com/covid-gateway/resource
 
 Resources:
   UserPool:
@@ -19,14 +23,19 @@ Resources:
     Type: AWS::Cognito::UserPoolResourceServer
     Properties:
       UserPoolId: !Ref UserPool
-      Identifier: transactions
-      Name: transactions
+      Identifier: !Ref ResourceIdentifier
+      Name: Resource
       Scopes:
-        - ScopeName: post
-          ScopeDescription: post_tx
-        - ScopeName: get
-          ScopeDescription: get_tx
-
+        - ScopeName: read
+          ScopeDescription: read
+        - ScopeName: update
+          ScopeDescription: update
+        - ScopeName: create
+          ScopeDescription: create
+        - ScopeName: delete
+          ScopeDescription: delete
+        - ScopeName: list
+          ScopeDescription: list
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -34,10 +43,15 @@ Resources:
       ClientName: OAuthClient
       GenerateSecret: True
       AllowedOAuthScopes:
-        - transactions/post
+        - !Sub ${ResourceIdentifier}/read
+        - !Sub ${ResourceIdentifier}/update
+        - !Sub ${ResourceIdentifier}/create
+        - !Sub ${ResourceIdentifier}/delete
+        - !Sub ${ResourceIdentifier}/list
       AllowedOAuthFlowsUserPoolClient: True
       AllowedOAuthFlows:
         - client_credentials
+
   PoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
