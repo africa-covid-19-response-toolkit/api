@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "IS_OFFLINE=true && serverless offline start -s dev",
     "debug": "export SLS_DEBUG=* IS_OFFLINE=true && node --inspect-brk=9229 ./node_modules/.bin/serverless offline start -s dev",
-    "postinstall": "serverless dynamodb install"
+    "postinstall": "serverless dynamodb install -s dev"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

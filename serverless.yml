@@ -13,18 +13,13 @@ provider:
   region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
   runtime: nodejs12.x
   environment:
-    COMMUNITY_TABLE: 
-        Fn::ImportValue: api-gateway-${opt:stage}-CommunityReportsTable
-    PASSENGERS_TABLE: 
-        Fn::ImportValue: api-gateway-${opt:stage}-PassengerReportsTable
-    MEDICAL_FACILITY_TABLE: 
-        Fn::ImportValue: api-gateway-${opt:stage}-MedicalFacilityReportsTable
-    SURVEILLANCE_TABLE: 
-        Fn::ImportValue: api-gateway-${opt:stage}-SurveillanceReportsTable
-    TOLL_FREE_TABLE: 
-        Fn::ImportValue: api-gateway-${opt:stage}-TollFreeReportsTable
-    AUTH_ISS:
-        Fn::ImportValue: ${opt:stage}-oauth-token-url
+    # cf:stackName.outputKey
+    COMMUNITY_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-CommunityReportsTable, 'CommunityReportsTable'}
+    PASSENGERS_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-PassengerReportsTable, 'PassengerReportsTable'}
+    MEDICAL_FACILITY_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-MedicalFacilityReportsTable, 'MedicalFacilityReportsTable'}
+    SURVEILLANCE_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-SurveillanceReportsTable, 'SurveillanceReportsTable'}
+    TOLL_FREE_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-TollFreeReportsTable, 'TollFreeReportsTable'}
+    AUTH_ISS: ${cf:api-gateway-cognito.${opt:stage}-oauth-token-url, 'AUTH_ISS_DEFAULT'}
     DOMAIN_NAME: ethiopia-covid19.com
 
   iamRoleStatements:
