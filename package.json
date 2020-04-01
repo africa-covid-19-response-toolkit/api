@@ -24,5 +24,8 @@
     "serverless-dynamodb-local": "^0.2.39",
     "serverless-offline": "^6.1.2",
     "dynamodb": "^1.2.1"
+  },
+  "engines": {
+    "node": "^12"
   }
 }
