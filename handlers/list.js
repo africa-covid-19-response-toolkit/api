@@ -1,10 +1,15 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable, prepareFilterParams, getDynamoDBOptions } = require('../helpers');
-const { isEmpty, slice } = require('lodash');
+const mongoose = require('mongoose');
+const { getModel } = require('../helpers');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient(getDynamoDBOptions());
+const mongoUrl = process.env.DOCUMENT_DB_URL;
+
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
 
 module.exports.list = async (event, context, callback) => {
   const {
@@ -12,11 +17,11 @@ module.exports.list = async (event, context, callback) => {
     queryStringParameters,
   } = event;
 
-  const table = getTable(type);
+  const Model = getModel(type);
 
-  if (!table)
+  if (!Model) {
     callback(null, {
-      statusCode: 400,
+      statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -24,42 +29,11 @@ module.exports.list = async (event, context, callback) => {
         message: `Unknown type provided. Type name: ${type}`,
       }),
     });
-
-  let params = {
-    TableName: table,
-  };
+    return;
+  }
 
   try {
-    // Prepare filter parameters.
-    try {
-      const filterParams = prepareFilterParams(queryStringParameters, type);
-      if (!isEmpty(filterParams)) params = { ...params, ...filterParams };
-    } catch (error) {
-      callback(null, {
-        statusCode: error.statusCode || 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(error.message),
-      });
-      return;
-    }
-
-    let results = [];
-
-    const unfoldAsync = (transform, initial) =>
-      transform(initial).then(next => next && unfoldAsync(transform, next));
-
-    // Recursively scan for all documents.
-    // DynamoDB Scan only limits to 1MB of data so in order to get all,
-    // Do it recursively.
-    // TODO: Find a better approach.
-    await unfoldAsync(lastEvaluatedKey =>
-      scan(params, lastEvaluatedKey).then(data => {
-        results = [...results, ...data.Items];
-        return data.LastEvaluatedKey;
-      })
-    );
+    const db = await mongoose.connect(mongoUrl, options);
 
     const start =
       queryStringParameters && queryStringParameters._start
@@ -68,15 +42,20 @@ module.exports.list = async (event, context, callback) => {
     const limit =
       queryStringParameters && queryStringParameters._limit
         ? parseInt(queryStringParameters._limit) || 0
-        : 0;
+        : 100;
 
-    // Since we have the entire data paginate using array slice.
-    // TODO: Find a better solution or consider using other DB with OFFSET capability.
-    const result = slice(results, start, start + limit || results.length);
-    const resultObject = {
-      count: result.length || 0,
-      result: result || [],
-    };
+    // Count
+    const count = await Model.countDocuments()
+      .skip(start)
+      .limit(limit);
+
+    // Result
+    const result = await Model.find()
+      .skip(start)
+      .limit(limit);
+
+    // Close connection
+    db.connection.close();
 
     const response = {
       statusCode: 200,
@@ -84,26 +63,20 @@ module.exports.list = async (event, context, callback) => {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify(resultObject),
+      body: JSON.stringify({ count, result }),
     };
+
     callback(null, response);
   } catch (error) {
+    // Close connection
+    db.connection.close();
     console.error(error.message);
     callback(null, {
-      statusCode: error.statusCode || 501,
+      statusCode: error.statusCode || 500,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: `Couldn't fetch the ${type}. ${error.message}`,
+        message: `Problem fetching ${type} data. ${error.message}`,
       }),
     });
   }
 };
-
-const scan = (params, lastEvaluatedKey) =>
-  dynamoDb
-    .scan({
-      ...params,
-      Limit: 50,
-      ExclusiveStartKey: lastEvaluatedKey,
-    })
-    .promise();

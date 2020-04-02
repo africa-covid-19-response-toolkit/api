@@ -4,8 +4,6 @@ frameworkVersion: '>=1.1.0 <2.0.0'
 
 plugins:
   - serverless-domain-manager
-  - serverless-offline
-  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -13,30 +11,9 @@ provider:
   region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
   runtime: nodejs12.x
   environment:
-    # cf:stackName.outputKey
-    COMMUNITY_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-CommunityReportsTable, 'CommunityReportsTable'}
-    PASSENGERS_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-PassengerReportsTable, 'PassengerReportsTable'}
-    MEDICAL_FACILITY_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-MedicalFacilityReportsTable, 'MedicalFacilityReportsTable'}
-    SURVEILLANCE_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-SurveillanceReportsTable, 'SurveillanceReportsTable'}
-    TOLL_FREE_TABLE: ${cf:api-gateway-cognito.api-gateway-${opt:stage}-TollFreeReportsTable, 'TollFreeReportsTable'}
-    AUTH_ISS: ${cf:api-gateway-cognito.${opt:stage}-oauth-token-url, 'AUTH_ISS_DEFAULT'}
+    AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
     DOMAIN_NAME: ethiopia-covid19.com
-
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.COMMUNITY_TABLE}'
-        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.PASSENGERS_TABLE}'
-        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MEDICAL_FACILITY_TABLE}'
-        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.SURVEILLANCE_TABLE}'
-        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TOLL_FREE_TABLE}'
+    DOCUMENT_DB_URL: mongodb://covidResponse:covidResponse@docdb-naods-cluster-01.cluster-cc9aixc24mlt.us-east-2.docdb.amazonaws.com:27017/covidResponse?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
 
 functions:
   auth:
@@ -44,6 +21,13 @@ functions:
 
   public-create:
     handler: handlers/public.create
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/community-report
@@ -51,6 +35,13 @@ functions:
 
   create:
     handler: handlers/create.create
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}
@@ -64,6 +55,13 @@ functions:
 
   list:
     handler: handlers/list.list
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}
@@ -77,6 +75,13 @@ functions:
 
   get:
     handler: handlers/get.get
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}
@@ -91,6 +96,13 @@ functions:
 
   update:
     handler: handlers/update.update
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}
@@ -105,6 +117,13 @@ functions:
 
   delete:
     handler: handlers/delete.delete
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}
@@ -125,17 +144,3 @@ custom:
     stage: ${self:provider.stage}
     certificateName: '*.${self:provider.environment.DOMAIN_NAME}'
     createRoute53Record: false
-
-  # Sets up local version of dynamodb for testing
-  dynamodb:
-    stages:
-      - dev
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-    migration:
-      dir: offline/migrations
-
-resources:
-  ${file(./dynamodb.yml)}

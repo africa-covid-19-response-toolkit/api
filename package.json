@@ -1,5 +1,5 @@
 {
-  "name": "aws-rest-with-dynamodb",
+  "name": "ethiopia-covid-19-response-api",
   "version": "1.0.0",
   "description": "Serverless CRUD service exposing a REST HTTP interface",
   "author": "",
@@ -10,13 +10,11 @@
     "postinstall": "serverless dynamodb install -s dev"
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",
     "lodash": "^4.17.15",
-    "request": "^2.88.2",
-    "sls": "^0.1.0",
-    "uuid": "^7.0.2"
+    "mongoose": "^5.9.7",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "serverless": "^1.67.0",

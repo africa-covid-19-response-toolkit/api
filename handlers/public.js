@@ -1,65 +1,64 @@
 'use strict';
 
-const { v4 } = require('uuid');
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { removeEmptyStringElements, getTable } = require('../helpers');
+const mongoose = require('mongoose');
+const { getModel } = require('../helpers');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const mongoUrl = process.env.DOCUMENT_DB_URL;
 
-module.exports.create = (event, context, callback) => {
-  const table = getTable('communities');
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
 
-  if (!table)
+module.exports.create = async (event, context, callback) => {
+  const type = 'communities';
+
+  const Model = getModel(type);
+
+  if (!Model) {
     callback(null, {
-      statusCode: 400,
+      statusCode: 500,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: `Unknown type provided. Type name: communities`,
+        message: `Unknown type provided. Type name: ${type}`,
       }),
     });
-
-  const timestamp = new Date().getTime();
+    return;
+  }
 
   const data = JSON.parse(event.body);
 
-  const params = {
-    TableName: table,
-    Item: {
-      ...removeEmptyStringElements(data),
-      id: v4(),
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    },
-  };
+  try {
+    const db = await mongoose.connect(mongoUrl, options);
 
-  // write the community to the database
-  dynamoDb.put(params, error => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: { message: `Couldn't create the community item.` },
-      });
-      return;
-    }
+    const result = await Model.create(data);
 
-    // create a response
+    // Close connection
+    db.connection.close();
+
     const response = {
       statusCode: 201,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(params.Item),
+
+      body: JSON.stringify(result),
     };
+
     callback(null, response);
-  });
+  } catch (error) {
+    // Close connection
+    db.connection.close();
+    console.error(error.message);
+    callback(null, {
+      statusCode: error.statusCode || 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Problem creating ${type} data. ${error.message}`,
+      }),
+    });
+  }
 };

@@ -1,5 +1,10 @@
-const { isEmpty } = require('lodash');
-const schema = require('../schema');
+const {
+  Community,
+  Passenger,
+  MedicalFacility,
+  Surveillance,
+  TollFree,
+} = require('../models');
 
 /**
  * Helper function to avoid:
@@ -50,76 +55,19 @@ module.exports.prepUpdateParams = (data, ReturnValues = 'ALL_NEW') => {
   };
 };
 
-// Prepare filter parameters.
-module.exports.prepareFilterParams = (queryStringParameters, type) => {
-  if (isEmpty(queryStringParameters)) return null;
-
-  let params = {};
-  let ExpressionAttributeNames = {};
-  let ExpressionAttributeValues = {};
-  let FilterExpression = '';
-
-  for (const key in queryStringParameters) {
-    const queryValue = queryStringParameters[`${key}`];
-
-    // Filters starting with _ are not type related.
-    // e.g _start, _limit, _sort....
-    if (key.startsWith('_')) continue;
-
-    if (!queryValue) continue;
-
-    const field = key.split('_')[0] || key;
-    const filter = { [`${field}`]: queryStringParameters[key] };
-
-    // Validate filters against schema.
-    const { value: validated, error } = schema[type].validate(filter);
-
-    if (error)
-      throw new Error(
-        `${field} is not a valid filter for type: ${type}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`
-      );
-
-    const operator = this.getFilterOperator(key.split('_')[1]);
-
-    // Add ExpressionAttributeNames
-    ExpressionAttributeNames[`#${key}`] = `${field}`;
-
-    // ExpressionAttributeValues, set data from the validated filter instead original queryStringParameters
-    // Everything value coming in through queryStringParameters is a string. During validation, '44' becomes 44 and 'true' becomes true.
-    // Therefore the validated filter values have proper type.
-    ExpressionAttributeValues[`:${key}`] = validated[field];
-
-    // FilterExpression
-    if (FilterExpression) {
-      FilterExpression =
-        `${FilterExpression} ` + 'AND' + ` #${key} ${operator} :${key}`;
-    } else {
-      FilterExpression = `#${key} ${operator} :${key}`;
-    }
-  }
-
-  if (!isEmpty(FilterExpression)) params['FilterExpression'] = FilterExpression;
-  if (!isEmpty(ExpressionAttributeNames))
-    params['ExpressionAttributeNames'] = ExpressionAttributeNames;
-  if (!isEmpty(ExpressionAttributeValues))
-    params['ExpressionAttributeValues'] = ExpressionAttributeValues;
-
-  return params;
-};
-
-// Returns table name for each type.
-module.exports.getTable = type => {
+// Returns a DocumentDB for each type.
+module.exports.getModel = type => {
   switch (type) {
     case 'communities':
-      return process.env.COMMUNITY_TABLE;
+      return Community;
     case 'passengers':
-      return process.env.PASSENGERS_TABLE;
+      return Passenger;
     case 'medical-facilities':
-      return process.env.MEDICAL_FACILITY_TABLE;
+      return MedicalFacility;
     case 'surveillance':
-      return process.env.SURVEILLANCE_TABLE;
+      return Surveillance;
     case 'toll-free':
-      return process.env.TOLL_FREE_TABLE;
+      return TollFree;
     default:
       return null;
   }
