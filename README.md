@@ -390,7 +390,7 @@ Please note: This API supports the following types:
 ```
 ---
 
-## Pagination (_limit & _start)
+## [Pagination (_limit & _start)](#pagination)
 - using  `_start` and `_limit` to control response result.
 
 Example:
@@ -426,7 +426,7 @@ Response body:
 }
 ```
 
-## Filtering - DocumentDB(MongoDB compatible)
+## [Filtering - DocumentDB(MongoDB compatible)](#filtering)
 
 Accept MongoDB query parameters through URI queries.
 
