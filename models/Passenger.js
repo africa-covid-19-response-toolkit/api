@@ -21,9 +21,9 @@ const PassengerSchema = new Schema(
     cough: { type: Boolean },
     dependents: [
       {
-        firstName: { type: String, required: true, max: 100 },
+        firstName: { type: String, max: 100 },
         middleName: { type: String, max: 100 },
-        lastName: { type: String, required: true, max: 100 },
+        lastName: { type: String, max: 100 },
         gender: { type: String },
         dateOfBirth: { type: Date },
         nationality: { type: String },

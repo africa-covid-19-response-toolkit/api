@@ -1,59 +1,64 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable } = require('../helpers');
+const mongoose = require('mongoose');
+const { getModel } = require('../helpers');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const mongoUrl = process.env.DOCUMENT_DB_URL;
 
-module.exports.delete = (event, context, callback) => {
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
+
+module.exports.delete = async (event, context, callback) => {
   const {
     pathParameters: { type, id },
   } = event;
 
-  const table = getTable(type);
+  const Model = getModel(type);
 
-  if (!table)
+  if (!Model) {
     callback(null, {
-      statusCode: 400,
+      statusCode: 500,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: { message: `Unknown type provided. Type name: ${type}` },
+      body: JSON.stringify({
+        message: `Unknown type provided. Type name: ${type}`,
+      }),
     });
+    return;
+  }
 
-  const params = {
-    TableName: table,
-    Key: {
-      id,
-    },
-  };
+  try {
+    const db = await mongoose.connect(mongoUrl, options);
 
-  // delete the {type} from the database
-  dynamoDb.delete(params, error => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: { message: `Couldn't remove the ${type} item.` },
-      });
-      return;
-    }
+    const result = await Model.deleteOne({ _id: id });
 
-    // create a response
+    // Close connection
+    db.connection.close();
+
     const response = {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}),
+
+      body: JSON.stringify(result),
     };
+
     callback(null, response);
-  });
+  } catch (error) {
+    // Close connection
+    db.connection.close();
+    console.error(error.message);
+    callback(null, {
+      statusCode: error.statusCode || 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Problem deleting ${type} data with id: ${id}. ${error.message}`,
+      }),
+    });
+  }
 };

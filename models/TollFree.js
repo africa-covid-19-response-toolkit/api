@@ -44,9 +44,9 @@ const TollFreeSchema = new Schema(
     },
     createdBy: {
       id: { type: Number },
-      firstName: { type: String, required: true, max: 100 },
+      firstName: { type: String, max: 100 },
       middleName: { type: String, max: 100 },
-      lastName: { type: String, required: true, max: 100 },
+      lastName: { type: String, max: 100 },
       email: {
         type: String,
         lowercase: true,
@@ -55,9 +55,9 @@ const TollFreeSchema = new Schema(
       phoneNumber: { type: String },
       region: {
         id: { type: Number },
-        firstName: { type: String, required: true, max: 100 },
+        firstName: { type: String, max: 100 },
         middleName: { type: String, max: 100 },
-        lastName: { type: String, required: true, max: 100 },
+        lastName: { type: String, max: 100 },
         email: {
           type: String,
           lowercase: true,

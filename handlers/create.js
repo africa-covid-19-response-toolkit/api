@@ -1,23 +1,26 @@
 'use strict';
 
-const { v4 } = require('uuid');
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { removeEmptyStringElements, getTable } = require('../helpers');
-const { isEmpty } = require('lodash');
-const schema = require('../schema');
+const mongoose = require('mongoose');
+const { getModel } = require('../helpers');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const mongoUrl = process.env.DOCUMENT_DB_URL;
+
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
 
 module.exports.create = async (event, context, callback) => {
   const {
     pathParameters: { type },
   } = event;
 
-  const table = getTable(type);
+  const Model = getModel(type);
 
-  if (!table) {
+  if (!Model) {
     callback(null, {
-      statusCode: 400,
+      statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -28,52 +31,36 @@ module.exports.create = async (event, context, callback) => {
     return;
   }
 
-  const timestamp = new Date().getTime();
-
-  let data = JSON.parse(event.body);
+  const data = JSON.parse(event.body);
 
   try {
-    // Remove empty strings because DynamoDB ValidationException.
-    data = removeEmptyStringElements(data);
+    const db = await mongoose.connect(mongoUrl, options);
 
-    try {
-      // Validate data.
-      if (!isEmpty(schema[type]))
-        data = await schema[type].validateAsync(data, { stripUnknown: true });
-    } catch (error) {
-      callback(null, {
-        statusCode: error.statusCode || 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `${type} validation error occurred. ${error.message}. Please refer https://github.com/Ethiopia-COVID19/api-gateway#data-structure.`,
-        }),
-      });
-      return;
-    }
+    const result = await Model.create(data);
 
-    const params = {
-      TableName: table,
-      Item: {
-        ...data,
-        id: v4(),
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      },
-    };
-
-    // write the {type} to the database
-    await dynamoDb.put(params).promise();
+    // Close connection
+    db.connection.close();
 
     const response = {
       statusCode: 201,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(params.Item),
+
+      body: JSON.stringify(result),
     };
 
     callback(null, response);
-  } catch (error) {}
+  } catch (error) {
+    // Close connection
+    db.connection.close();
+    console.error(error.message);
+    callback(null, {
+      statusCode: error.statusCode || 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: `Problem creating ${type} data. ${error.message}`,
+      }),
+    });
+  }
 };
