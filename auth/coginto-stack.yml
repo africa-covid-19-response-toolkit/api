@@ -7,12 +7,15 @@ Parameters:
   Domain:
     Type: String
     Description: The domain name auth client
-    Default: et-covid19
+    Default: auth.ethiopia-covid19.com
   ResourceIdentifier:
     Type: String
     Description: The domain name auth client
     Default: https://api.ethiopia-covid19.com/covid-gateway/resource
-
+  pCertificateArn:
+    Description: Certificate Arn for the domain
+    Type: String
+    Default: "arn:aws:acm:us-east-2:689384711846:certificate/fefdfc46-d450-46d4-be46-2c34c100c65e"
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -57,6 +60,8 @@ Resources:
     Properties:
       Domain: !Ref Domain
       UserPoolId: !Ref UserPool
+    #  CustomDomainConfig: 
+    #    CertificateArn: !Ref pCertificateArn
 
 Outputs:
   OauthTokenUrl:
@@ -64,3 +69,8 @@ Outputs:
       !Sub 'https://${Domain}.auth.${AWS::Region}.amazoncognito.com'
     Export:
       Name: !Sub '${Stage}-oauth-token-url'
+  ProviderURL:
+    Value:
+      !GetAtt UserPool.ProviderURL
+    Export:
+      Name: !Sub '${Stage}-provider-url'
