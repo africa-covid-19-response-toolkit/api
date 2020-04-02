@@ -30,7 +30,13 @@ The idea behind the `communities` directory is that in case you want to create a
 
 ```bash
 npm install
+
+# Run dev
+npm run dev
 ```
+
+### Debug
+In VSCODE: Activity Bar > Run > sls debug OR a shortcut is F5
 
 ### Deploy
 

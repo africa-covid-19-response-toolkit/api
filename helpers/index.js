@@ -158,3 +158,16 @@ module.exports.extractTokenHeader = token => {
   const header = JSON.parse(headerJSON);
   return header;
 };
+
+// Returns dynamoDB options
+module.exports.getDynamoDBOptions = () => {
+  if (process.env.IS_OFFLINE) {
+    return {
+      region: 'localhost',
+      endpoint: 'http://localhost:8000',
+    };
+  }
+
+  // passing empty object should be okay for prod
+  return {}
+}

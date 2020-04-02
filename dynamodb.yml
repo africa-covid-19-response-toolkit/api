@@ -35,6 +35,7 @@ Parameters:
     Description: The Medical Reports Table Name
     Type: String
     Default: MedicalFacilityReports
+
 Resources:
   PassengerReports: 
     Type: "AWS::DynamoDB::Table"
@@ -47,9 +48,9 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref 'ReadCapacityUnits'
-        WriteCapacityUnits: !Ref 'WriteCapacityUnits'
-      TableName: !Ref pPassengerReports
+        ReadCapacityUnits: ${self:resources.Parameters.ReadCapacityUnits.Default}
+        WriteCapacityUnits: ${self:resources.Parameters.WriteCapacityUnits.Default}
+      TableName: ${self:resources.Parameters.pPassengerReports.Default}
   CommunityReports:
     Type: 'AWS::DynamoDB::Table'
     DeletionPolicy: Retain
@@ -61,9 +62,9 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref 'ReadCapacityUnits'
-        WriteCapacityUnits: !Ref 'WriteCapacityUnits'
-      TableName: !Ref pCommunityReports
+        ReadCapacityUnits: ${self:resources.Parameters.ReadCapacityUnits.Default}
+        WriteCapacityUnits: ${self:resources.Parameters.WriteCapacityUnits.Default}
+      TableName: ${self:resources.Parameters.pCommunityReports.Default}
   MedicalFacilityReports: 
     Type: "AWS::DynamoDB::Table"
     DeletionPolicy: Retain
@@ -75,9 +76,9 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref 'ReadCapacityUnits'
-        WriteCapacityUnits: !Ref 'WriteCapacityUnits'
-      TableName: !Ref pMedicalFacilityReports
+        ReadCapacityUnits: ${self:resources.Parameters.ReadCapacityUnits.Default}
+        WriteCapacityUnits: ${self:resources.Parameters.WriteCapacityUnits.Default}
+      TableName: ${self:resources.Parameters.pMedicalFacilityReports.Default}
   SurveillanceReports:
     Type: 'AWS::DynamoDB::Table'
     DeletionPolicy: Retain
@@ -89,6 +90,6 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: !Ref 'ReadCapacityUnits'
-        WriteCapacityUnits: !Ref 'WriteCapacityUnits'
-      TableName: !Ref pSurveillanceReports
+        ReadCapacityUnits: ${self:resources.Parameters.ReadCapacityUnits.Default}
+        WriteCapacityUnits: ${self:resources.Parameters.WriteCapacityUnits.Default}
+      TableName: ${self:resources.Parameters.pSurveillanceReports.Default}

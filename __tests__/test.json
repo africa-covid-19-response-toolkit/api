@@ -1,0 +1,10 @@
+
+{
+    "queryStringParameters": {
+        "woreda_ne": "ad",
+        "sort": "woreda:desc"
+    },
+    "pathParameters": {
+        "type": "communities"
+    }
+}
