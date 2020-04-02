@@ -20,7 +20,6 @@ provider:
     VPC_SUBNET_GROUP_2: subnet-1d93b567
     VPC_SUBNET_GROUP_3: subnet-f569819e
 
-
 functions:
   auth:
     handler: handlers/auth.authorize
@@ -30,11 +29,10 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
-
     events:
       - http:
           path: gateway/community-report
@@ -45,7 +43,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
@@ -65,7 +63,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
@@ -85,7 +83,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
@@ -106,7 +104,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
@@ -127,7 +125,7 @@ functions:
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-        subnetIds:
+      subnetIds:
         - ${self:provider.environment.VPC_SUBNET_GROUP_1}
         - ${self:provider.environment.VPC_SUBNET_GROUP_2}
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
