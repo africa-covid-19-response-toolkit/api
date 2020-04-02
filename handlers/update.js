@@ -36,7 +36,9 @@ module.exports.update = async (event, context, callback) => {
   try {
     const db = await mongoose.connect(mongoUrl, options);
 
-    const result = await Model.updateOne({ _id: id }, data);
+    const result = await Model.findOneAndUpdate({ _id: id }, data, {
+      new: true,
+    });
 
     // Close connection
     db.connection.close();

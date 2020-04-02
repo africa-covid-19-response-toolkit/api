@@ -10,13 +10,6 @@ provider:
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
   region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
   runtime: nodejs12.x
-  vpc:
-    securityGroupIds:
-      - sg-3e5c8f59
-    subnetIds:
-      - subnet-90840ddc
-      - subnet-1d93b567
-      - subnet-f569819e
   environment:
     AUTH_ISS: https://cognito-idp.${self:provider.region}.amazonaws.com/us-east-2_AGCA6XBTP
     DOMAIN_NAME: ethiopia-covid19.com
@@ -28,6 +21,13 @@ functions:
 
   public-create:
     handler: handlers/public.create
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/community-report
@@ -35,6 +35,13 @@ functions:
 
   create:
     handler: handlers/create.create
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}
@@ -48,6 +55,13 @@ functions:
 
   list:
     handler: handlers/list.list
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}
@@ -61,6 +75,13 @@ functions:
 
   get:
     handler: handlers/get.get
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}
@@ -75,6 +96,13 @@ functions:
 
   update:
     handler: handlers/update.update
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}
@@ -89,6 +117,13 @@ functions:
 
   delete:
     handler: handlers/delete.delete
+    vpc:
+      securityGroupIds:
+        - sg-3e5c8f59
+      subnetIds:
+        - subnet-90840ddc
+        - subnet-1d93b567
+        - subnet-f569819e
     events:
       - http:
           path: gateway/{type}/{id}

@@ -34,7 +34,7 @@ module.exports.delete = async (event, context, callback) => {
   try {
     const db = await mongoose.connect(mongoUrl, options);
 
-    const result = await Model.deleteOne({ _id: id });
+    await Model.deleteOne({ _id: id });
 
     // Close connection
     db.connection.close();
@@ -45,7 +45,7 @@ module.exports.delete = async (event, context, callback) => {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify(result),
+      body: JSON.stringify(true),
     };
 
     callback(null, response);
