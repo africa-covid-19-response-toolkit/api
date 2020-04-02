@@ -489,6 +489,11 @@ minimalistic-crypto-utils@^1.0.0, minimalistic-crypto-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
   integrity sha1-9sAMHAsIIkblxNmd+4x8CDsrWCo=
 
+mongo-querystring@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/mongo-querystring/-/mongo-querystring-4.1.1.tgz#4824ea917fbda8128730ab4bc9b2dd4f7275c471"
+  integrity sha1-SCTqkX+9qBKHMKtLybLdT3J1xHE=
+
 mongodb@3.5.5:
   version "3.5.5"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.5.5.tgz#1334c3e5a384469ac7ef0dea69d59acc829a496a"

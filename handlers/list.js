@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const { getModel } = require('../helpers');
+const { omit } = require('lodash');
+const MongoQS = require('mongo-querystring');
 
 const mongoUrl = process.env.DOCUMENT_DB_URL;
 
@@ -11,11 +13,26 @@ const options = {
 };
 mongoose.Promise = global.Promise;
 
+// Create a new Mongo QueryString parser
+const qs = new MongoQS({
+  custom: {
+    bbox: 'geojson',
+    near: 'geojson', // For future use.
+  },
+});
+
 module.exports.list = async (event, context, callback) => {
   const {
     pathParameters: { type },
     queryStringParameters,
   } = event;
+
+  // Parse the request query parameters
+  const query = queryStringParameters
+    ? qs.parse(omit(queryStringParameters, ['_start', '_limit'])) // exclude _start and _limit.
+    : {};
+
+  console.log(query);
 
   const Model = getModel(type);
 
@@ -45,12 +62,12 @@ module.exports.list = async (event, context, callback) => {
         : 100;
 
     // Count
-    const count = await Model.countDocuments()
+    const count = await Model.countDocuments(query)
       .skip(start)
       .limit(limit);
 
     // Result
-    const result = await Model.find()
+    const result = await Model.find(query)
       .skip(start)
       .limit(limit);
 

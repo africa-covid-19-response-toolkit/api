@@ -382,20 +382,81 @@ Please note: This API supports the following types:
 ```
 ---
 
+## Pagination
+- using  `_start` and `_limit` to control response result.
+
+Example:
+`/communities?_start=0&_limit=2`
+
+Response body:
+
+```JSON
+{
+    "count": 2,
+    "result": [
+        {
+            "_id": "5e84d29c524432000859ad59",
+            "firstName": "Aster",
+            "lastName": "Haylu",
+            "age": 44,
+            "sex": "Male",
+            "createdAt": "2020-04-01T17:42:52.659Z",
+            "updatedAt": "2020-04-01T17:42:52.659Z",
+            "__v": 0
+        },
+        {
+            "_id": "5e85630291dd5600082d94f6",
+            "firstName": "Aster",
+            "lastName": "Haylu",
+            "age": 44,
+            "sex": "Male",
+            "createdAt": "2020-04-02T03:58:58.448Z",
+            "updatedAt": "2020-04-02T03:58:58.448Z",
+            "__v": 0
+        }
+    ]
+}
+```
+
+## Filtering - DocumentDB(MongoDB compatible)
+
+Accept MongoDB query parameters through URI queries.
+
+* Aliased query parameters
+* Blacklisted query parameters
+* Whitelisted query parameters
+* Basic operators
+  * `$eq`
+  * `$gt`
+  * `$gte`
+  * `$lt`
+  * `$lte`
+  * `$ne`
+  * `$in`
+  * `$nin`
+  * `$exists`
+  * `$regex`
+* Parse string integers and floats to numbers
+* Parse string boolean to ture/false booleans
+
+| operation | query string  | query object |
+|-----------|---------------|--------------|
+| equal     | `?foo=bar`    | `{ foo: "bar" }` |
+| unequal   | `?foo=!bar`   | `{ foo: { $ne: "bar" }}` |
+| exists    | `?foo=`       | `{ foo: { $exists: true }}` |
+| not exists | `?foo=!`     | `{ foo: { $exists: false }}` |
+| greater than | `?foo=>10` | `{ foo: { $gt: 10 }}` |
+| less than | `?foo=<10`    | `{ foo: { $lt: 10 }}` |
+| greater than or equal to | `?foo=>=10` | `{ foo: { $gte: 10 }}` |
+| less than or equal to | `?foo=<=10`    | `{ foo: { $lte: 10 }}` |
+| starts with | `?foo=^bar` | `{ foo: { $regex: "^bar", $options: "i" }}` |
+| ends with | `?foo=$bar`   | `{ foo: { $regex: "bar$", $options: "i" }}` |
+| contains  | `?foo=~bar`   | `{ foo: { $regex: "bar", $options: "i" }}` |
+| in array  | `?foo[]=bar&foo[]=baz` | `{ foo: { $in: ['bar', 'baz'] }}` |
+| not in array | `?foo[]=!bar&foo[]=!baz` | `{ foo: { $nin: ['bar', 'baz'] }}` |
+
 ## [Scaling](#scaling)
 
 ### AWS Lambda
 
 By default, AWS Lambda limits the total concurrent executions across all functions within a given region to 100. The default limit is a safety limit that protects you from costs due to potential runaway or recursive functions during initial development and testing. To increase this limit above the default, follow the steps in [To request a limit increase for concurrent executions](http://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html#increase-concurrent-executions-limit).
-
-### DynamoDB
-
-When you create a table, you specify how much provisioned throughput capacity you want to reserve for reads and writes. DynamoDB will reserve the necessary resources to meet your throughput needs while ensuring consistent, low-latency performance. You can change the provisioned throughput and increasing or decreasing capacity as needed.
-
-This is can be done via settings in the `serverless.yml`.
-
-```yaml
-  ProvisionedThroughput:
-    ReadCapacityUnits: 1
-    WriteCapacityUnits: 1
-```
