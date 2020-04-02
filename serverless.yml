@@ -4,8 +4,6 @@ frameworkVersion: '>=1.1.0 <2.0.0'
 
 plugins:
   - serverless-domain-manager
-  - serverless-offline
-  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -146,17 +144,3 @@ custom:
     stage: ${self:provider.stage}
     certificateName: '*.${self:provider.environment.DOMAIN_NAME}'
     createRoute53Record: false
-
-  # Sets up local version of dynamodb for testing
-  dynamodb:
-    stages:
-      - dev
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-    migration:
-      dir: offline/migrations
-
-resources:
-  ${file(./dynamodb.yml)}
