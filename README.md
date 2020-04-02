@@ -382,7 +382,7 @@ Please note: This API supports the following types:
 ```
 ---
 
-## Pagination
+## Pagination (_limit & _start)
 - using  `_start` and `_limit` to control response result.
 
 Example:
@@ -437,7 +437,7 @@ Accept MongoDB query parameters through URI queries.
   * `$exists`
   * `$regex`
 * Parse string integers and floats to numbers
-* Parse string boolean to ture/false booleans
+* Parse string boolean to true/false booleans
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
