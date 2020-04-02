@@ -13,6 +13,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",
     "lodash": "^4.17.15",
+    "mongo-querystring": "^4.1.1",
     "mongoose": "^5.9.7",
     "request": "^2.88.2"
   },
