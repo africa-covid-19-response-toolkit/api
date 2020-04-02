@@ -31,7 +31,15 @@ The idea behind the `communities` directory is that in case you want to create a
 ```bash
 npm install
 
-# Run dev
+# To run locally
+# ----
+# Install MongoDB
+brew install mongodb
+
+# Start MongoDB daemon (keep this running)
+mongod --dbpath <PROJECT DIRECTORY>mongo-db
+
+# In a new terminal
 npm run dev
 ```
 
