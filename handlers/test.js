@@ -1,3 +1,10 @@
 module.exports.hello = async (event, context, callback) => {
-  return JSON.stringify({ message: 'Hello World' });
+  return {
+    statusCode: 201,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+
+    body: JSON.stringify({ message: 'Hello World' }),
+  };
 };
