@@ -1,4 +1,4 @@
-service: ethiopia-covid-19-gateway
+service: covid-19-gateway
 
 frameworkVersion: '>=1.1.0 <2.0.0'
 
@@ -13,12 +13,12 @@ provider:
   runtime: nodejs12.x
   environment:
     AUTH_ISS: ${cf:api-gateway-cognito.ProviderURL}
-    DOMAIN_NAME: ethiopia-covid19.com
-    DOCUMENT_DB_URL: ${env:LOCAL_DB_URL, 'mongodb://covidResponse:covidResponse@docdb-naods-cluster-01.cluster-cc9aixc24mlt.us-east-2.docdb.amazonaws.com:27017/covidResponse?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'}
-    VPC_SECURITY_GROUP_1: sg-3e5c8f59
-    VPC_SUBNET_GROUP_1: subnet-90840ddc
-    VPC_SUBNET_GROUP_2: subnet-1d93b567
-    VPC_SUBNET_GROUP_3: subnet-f569819e
+    DOMAIN_NAME: covid19.et
+    DOCUMENT_DB_URL: ${env:LOCAL_DB_URL, 'mongodb://covidResponse:covidResponse@data-cluster.cluster-ce9yxmgjnlmc.us-east-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'}
+    VPC_SECURITY_GROUP_1: sg-c88a75a3
+    VPC_SUBNET_GROUP_1: subnet-63a9ff2e
+    VPC_SUBNET_GROUP_2: subnet-80677afb
+    VPC_SUBNET_GROUP_3: subnet-76ba611e
 
 functions:
   auth:
@@ -71,7 +71,7 @@ functions:
       - http:
           path: gateway/{type}
           method: get
-          authorizer: auth
+          # authorizer: auth
           cors: true
           request:
             parameters:
@@ -120,31 +120,31 @@ functions:
                 type: true
                 id: true
 
-  delete:
-    handler: handlers/delete.delete
-    vpc:
-      securityGroupIds:
-        - ${self:provider.environment.VPC_SECURITY_GROUP_1}
-      subnetIds:
-        - ${self:provider.environment.VPC_SUBNET_GROUP_1}
-        - ${self:provider.environment.VPC_SUBNET_GROUP_2}
-        - ${self:provider.environment.VPC_SUBNET_GROUP_3}
-    events:
-      - http:
-          path: gateway/{type}/{id}
-          method: delete
-          authorizer: auth
-          cors: true
-          request:
-            parameters:
-              paths:
-                type: true
-                id: true
+  # delete:
+  #   handler: handlers/delete.delete
+  #   vpc:
+  #     securityGroupIds:
+  #       - ${self:provider.environment.VPC_SECURITY_GROUP_1}
+  #     subnetIds:
+  #       - ${self:provider.environment.VPC_SUBNET_GROUP_1}
+  #       - ${self:provider.environment.VPC_SUBNET_GROUP_2}
+  #       - ${self:provider.environment.VPC_SUBNET_GROUP_3}
+  #   events:
+  #     - http:
+  #         path: gateway/{type}/{id}
+  #         method: delete
+  #         authorizer: auth
+  #         cors: true
+  #         request:
+  #           parameters:
+  #             paths:
+  #               type: true
+  #               id: true
 
 custom:
   # Adds the Custom DNS Name for API Gateway
   customDomain:
-    domainName: 'api.${self:provider.environment.DOMAIN_NAME}'
+    domainName: 'gateway.${self:provider.environment.DOMAIN_NAME}'
     basePath: ''
     stage: ${self:provider.stage}
     certificateName: '*.${self:provider.environment.DOMAIN_NAME}'
