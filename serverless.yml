@@ -24,6 +24,14 @@ functions:
   auth:
     handler: handlers/auth.authorize
 
+  hello:
+    handler: handlers/test.hello
+    events:
+      - http:
+          path: gateway/hello
+          method: get
+          cors: true   
+
   public-create:
     handler: handlers/public.create
     vpc:
