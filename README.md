@@ -81,7 +81,7 @@ const AUTHORIZATION_KEY = Buffer.from('process.env.CLIENT_ID:process.env.CLIENT_
 Send a request to the auth endpoint to get an access token:
 
 ```
-curl --location --request POST 'https://ethiopia-covid19.auth.us-east-2.amazoncognito.com/oauth2/token' \
+curl --location --request POST 'https://et-covid20.auth.us-east-2.amazoncognito.com/oauth2/token' \
 --header 'Authorization: Basic abc123==' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=client_credentials'
