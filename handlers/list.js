@@ -37,7 +37,7 @@ module.exports.list = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    callback(null, {
+    return {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
@@ -45,12 +45,12 @@ module.exports.list = async (event, context, callback) => {
       body: JSON.stringify({
         message: `Unknown type provided. Type name: ${type}`,
       }),
-    });
-    return;
+    };
   }
 
+  let db = null;
   try {
-    const db = await mongoose.connect(mongoUrl, options);
+    db = await mongoose.connect(mongoUrl, options);
 
     const start =
       queryStringParameters && queryStringParameters._start
@@ -74,7 +74,7 @@ module.exports.list = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    const response = {
+    return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
@@ -82,18 +82,15 @@ module.exports.list = async (event, context, callback) => {
 
       body: JSON.stringify({ count, result }),
     };
-
-    callback(null, response);
   } catch (error) {
-    // Close connection
-    db.connection.close();
+    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    callback(null, {
+    return {
       statusCode: error.statusCode || 500,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: `Problem fetching ${type} data. ${error.message}`,
       }),
-    });
+    };
   }
 };

@@ -19,7 +19,7 @@ module.exports.delete = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    callback(null, {
+    return {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
@@ -27,19 +27,19 @@ module.exports.delete = async (event, context, callback) => {
       body: JSON.stringify({
         message: `Unknown type provided. Type name: ${type}`,
       }),
-    });
-    return;
+    };
   }
-
+  let db = null;
   try {
-    const db = await mongoose.connect(mongoUrl, options);
+    db = await mongoose.connect(mongoUrl, options);
 
-    await Model.deleteOne({ _id: id });
+    // Temporarily removed until scopes are defined.
+    // await Model.deleteOne({ _id: id });
 
     // Close connection
     db.connection.close();
 
-    const response = {
+    return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
@@ -47,18 +47,16 @@ module.exports.delete = async (event, context, callback) => {
 
       body: JSON.stringify(true),
     };
-
-    callback(null, response);
   } catch (error) {
     // Close connection
-    db.connection.close();
+    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    callback(null, {
+    return {
       statusCode: error.statusCode || 500,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: `Problem deleting ${type} data with id: ${id}. ${error.message}`,
       }),
-    });
+    };
   }
 };
