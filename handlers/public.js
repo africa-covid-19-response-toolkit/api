@@ -20,6 +20,8 @@ module.exports.create = async (event, context, callback) => {
     return {
       statusCode: 500,
       headers: {
+        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -41,6 +43,8 @@ module.exports.create = async (event, context, callback) => {
     return {
       statusCode: 201,
       headers: {
+        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
 

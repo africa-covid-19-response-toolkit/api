@@ -37,15 +37,16 @@ module.exports.list = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    return {
+    callback(null, {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         message: `Unknown type provided. Type name: ${type}`,
       }),
-    };
+    });
   }
 
   let db = null;
@@ -62,35 +63,34 @@ module.exports.list = async (event, context, callback) => {
         : 100;
 
     // Count
-    const count = await Model.countDocuments(query)
-      .skip(start)
-      .limit(limit);
+    const count = await Model.countDocuments(query).skip(start).limit(limit);
 
     // Result
-    const result = await Model.find(query)
-      .skip(start)
-      .limit(limit);
+    const result = await Model.find(query).skip(start).limit(limit);
 
     // Close connection
     db.connection.close();
 
-    return {
+    callback(null, {
       statusCode: 200,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
-
       body: JSON.stringify({ count, result }),
-    };
+    });
   } catch (error) {
     if (db && db.connection) db.connection.close();
     console.error(error.message);
-    return {
+    callback(null, {
       statusCode: error.statusCode || 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({
         message: `Problem fetching ${type} data. ${error.message}`,
       }),
-    };
+    });
   }
 };

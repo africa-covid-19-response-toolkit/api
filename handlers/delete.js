@@ -19,15 +19,16 @@ module.exports.delete = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    return {
+    callback(null, {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         message: `Unknown type provided. Type name: ${type}`,
       }),
-    };
+    });
   }
   let db = null;
   try {
@@ -39,24 +40,27 @@ module.exports.delete = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    return {
+    callback(null, {
       statusCode: 200,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
-
       body: JSON.stringify(true),
-    };
+    });
   } catch (error) {
     // Close connection
     if (db && db.connection) db.connection.close();
     console.error(error.message);
-    return {
+    callback(null, {
       statusCode: error.statusCode || 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({
         message: `Problem deleting ${type} data with id: ${id}. ${error.message}`,
       }),
-    };
+    });
   }
 };

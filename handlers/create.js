@@ -19,15 +19,16 @@ module.exports.create = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    return {
+    callback(null, {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         message: `Unknown type provided. Type name: ${type}`,
       }),
-    };
+    });
   }
   let db = null;
   const data = JSON.parse(event.body);
@@ -40,24 +41,28 @@ module.exports.create = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    return {
+    callback(null, {
       statusCode: 201,
       headers: {
-        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
 
       body: JSON.stringify(result),
-    };
+    });
   } catch (error) {
     // Close connection
     if (db && db.connection) db.connection.close();
     console.error(error.message);
-    return {
+    callback(null, {
       statusCode: error.statusCode || 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
       body: JSON.stringify({
         message: `Problem creating ${type} data. ${error.message}`,
       }),
-    };
+    });
   }
 };
