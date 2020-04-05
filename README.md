@@ -134,8 +134,8 @@ Please note: This API supports the following types:
   "sefer": "",
   "woreda": "",
   "kebele": "",
-  "houseNo": "",
-  "phoneNo": "1231231",
+  "houseNumber": "",
+  "phoneNumber": "1231231",
   "latitude": 38.9071923,
   "longitude": -77.0368707,
   "fever": true,
@@ -163,7 +163,7 @@ Please note: This API supports the following types:
   "nationality": "Åland Islands",
   "passportNo": "asdfasdfa",
   "travelFrom": "Algeria",
-  "phoneNo": "sdfasdfasdfasdf",
+  "phoneNumber": "sdfasdfasdfasdf",
   "hotelName": "Ghion Hotel",
   "flightNumber": "asdfas",
   "seatNumber": "dfasdfasdf",
@@ -186,7 +186,7 @@ Please note: This API supports the following types:
       "cough": true,
       "travelFrom": "Algeria",
       "transitFrom": "Albania",
-      "phoneNo": "sdfasdfasdfasdf",
+      "phoneNumber": "sdfasdfasdfasdf",
       "flightNumber": "asdfas",
       "selectedLanguage": "English"
     },
@@ -204,7 +204,7 @@ Please note: This API supports the following types:
       "cough": true,
       "travelFrom": "Algeria",
       "transitFrom": "Albania",
-      "phoneNo": "sdfasdfasdfasdf",
+      "phoneNumber": "sdfasdfasdfasdf",
       "flightNumber": "asdfas",
       "selectedLanguage": "English"
     }
