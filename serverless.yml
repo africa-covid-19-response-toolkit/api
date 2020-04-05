@@ -12,7 +12,7 @@ provider:
   region: ${opt:region, 'us-east-2'} # Overwrite the default region used. Default is us-east-1
   runtime: nodejs12.x
   environment:
-    AUTH_ISS: ${cf:api-gateway-cognito.ProviderURL}
+    AUTH_ISS: ${cf:api-gateway-cognito.ProviderURL, LOCAL}
     DOMAIN_NAME: ethiopia-covid19.com
     DOCUMENT_DB_URL: ${env:LOCAL_DB_URL, 'mongodb://covidResponse:covidResponse@docdb-naods-cluster-01.cluster-cc9aixc24mlt.us-east-2.docdb.amazonaws.com:27017/covidResponse?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'}
     VPC_SECURITY_GROUP_1: sg-3e5c8f59
@@ -34,7 +34,7 @@ functions:
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
     events:
       - http:
-          path: gateway/community-report/{type}
+          path: gateway/public/{type}
           method: post
 
   create:
