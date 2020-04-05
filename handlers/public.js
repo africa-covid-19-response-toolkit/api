@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { getModel } = require('../helpers');
+const { getModel, handleError, handleResponse } = require('../helpers');
 
 const mongoUrl = process.env.DOCUMENT_DB_URL;
 
@@ -17,21 +17,11 @@ module.exports.create = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    return {
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Credentials': true,
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: `Unknown type provided. Type name: ${type}`,
-      }),
-    };
+    return handleError(callback, 'noModelFound');
   }
-
+  let db = null;
   const data = JSON.parse(event.body);
-  let db;
+
   try {
     db = await mongoose.connect(mongoUrl, options);
 
@@ -40,26 +30,11 @@ module.exports.create = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    return {
-      statusCode: 201,
-      headers: {
-        'Access-Control-Allow-Credentials': true,
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(result),
-    };
+    handleResponse(callback, result, 201);
   } catch (error) {
-    // Close connection
-    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    return {
-      statusCode: error.statusCode || 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `Problem creating ${type} data. ${error.message}`,
-      }),
-    };
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, 'general', error);
   }
 };

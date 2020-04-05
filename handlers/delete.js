@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { getModel } = require('../helpers');
+const { getModel, handleError, handleResponse } = require('../helpers');
 
 const mongoUrl = process.env.DOCUMENT_DB_URL;
 
@@ -19,48 +19,23 @@ module.exports.delete = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    callback(null, {
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Unknown type provided. Type name: ${type}`,
-      }),
-    });
+    return handleError(callback, 'noModelFound');
   }
   let db = null;
   try {
     db = await mongoose.connect(mongoUrl, options);
 
     // Temporarily removed until scopes are defined.
-    // await Model.deleteOne({ _id: id });
+    await Model.deleteOne({ _id: id });
 
     // Close connection
     db.connection.close();
 
-    callback(null, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify(true),
-    });
+    handleResponse(callback, true, 200);
   } catch (error) {
-    // Close connection
-    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    callback(null, {
-      statusCode: error.statusCode || 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Problem deleting ${type} data with id: ${id}. ${error.message}`,
-      }),
-    });
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, 'general', error);
   }
 };

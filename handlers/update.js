@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { getModel } = require('../helpers');
+const { getModel, handleError, handleResponse } = require('../helpers');
 
 const mongoUrl = process.env.DOCUMENT_DB_URL;
 
@@ -19,16 +19,7 @@ module.exports.update = async (event, context, callback) => {
   const Model = getModel(type);
 
   if (!Model) {
-    callback(null, {
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Unknown type provided. Type name: ${type}`,
-      }),
-    });
+    return handleError(callback, 'noModelFound');
   }
 
   const data = JSON.parse(event.body);
@@ -43,27 +34,11 @@ module.exports.update = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    callback(null, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify(result),
-    });
+    handleResponse(callback, result);
   } catch (error) {
-    // Close connection
-    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    callback(null, {
-      statusCode: error.statusCode || 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Problem updating ${type} data with id ${id}. ${error.message}`,
-      }),
-    });
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, 'general', error);
   }
 };

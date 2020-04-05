@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { getModel } = require('../helpers');
+const { getModel, handleError, handleResponse } = require('../helpers');
 const { omit } = require('lodash');
 const MongoQS = require('mongo-querystring');
 
@@ -32,21 +32,10 @@ module.exports.list = async (event, context, callback) => {
     ? qs.parse(omit(queryStringParameters, ['_start', '_limit'])) // exclude _start and _limit.
     : {};
 
-  console.log(query);
-
   const Model = getModel(type);
 
   if (!Model) {
-    callback(null, {
-      statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Unknown type provided. Type name: ${type}`,
-      }),
-    });
+    return handleError(callback, 'noModelFound');
   }
 
   let db = null;
@@ -55,12 +44,12 @@ module.exports.list = async (event, context, callback) => {
 
     const start =
       queryStringParameters && queryStringParameters._start
-        ? parseInt(queryStringParameters._start) || 0
-        : 0;
+        ? parseInt(queryStringParameters._start) || null
+        : null;
     const limit =
       queryStringParameters && queryStringParameters._limit
-        ? parseInt(queryStringParameters._limit) || 0
-        : 0;
+        ? parseInt(queryStringParameters._limit) || null
+        : null;
 
     // Count
     const count = await Model.countDocuments(query).skip(start).limit(limit);
@@ -71,26 +60,11 @@ module.exports.list = async (event, context, callback) => {
     // Close connection
     db.connection.close();
 
-    callback(null, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({ count, result }),
-    });
+    handleResponse(callback, { count, result });
   } catch (error) {
-    if (db && db.connection) db.connection.close();
     console.error(error.message);
-    callback(null, {
-      statusCode: error.statusCode || 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `Problem fetching ${type} data. ${error.message}`,
-      }),
-    });
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, 'general', error);
   }
 };
