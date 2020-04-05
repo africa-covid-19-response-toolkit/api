@@ -53,6 +53,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_4Sh8lFrAm
             scopes:
+              - aws.cognito.signin.user.admin
               - https://api.ethiopia-covid19.com/covid-gateway/resource/create
           cors: true
           request:
@@ -76,6 +77,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_4Sh8lFrAm
             scopes:
+              - aws.cognito.signin.user.admin
               - https://api.ethiopia-covid19.com/covid-gateway/resource/list
           cors: true
           request:
@@ -99,8 +101,8 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_4Sh8lFrAm
             scopes:
+              - aws.cognito.signin.user.admin
               - https://api.ethiopia-covid19.com/covid-gateway/resource/read
-
           cors: true
           request:
             parameters:
@@ -124,6 +126,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_4Sh8lFrAm
             scopes:
+              - aws.cognito.signin.user.admin
               - https://api.ethiopia-covid19.com/covid-gateway/resource/update
           cors: true
           request:
@@ -148,6 +151,7 @@ functions:
           authorizer:
             arn: arn:aws:cognito-idp:us-east-2:689384711846:userpool/us-east-2_4Sh8lFrAm
             scopes:
+              - aws.cognito.signin.user.admin
               - https://api.ethiopia-covid19.com/covid-gateway/resource/delete
           cors: true
           request:
