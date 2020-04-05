@@ -60,7 +60,7 @@ module.exports.list = async (event, context, callback) => {
     const limit =
       queryStringParameters && queryStringParameters._limit
         ? parseInt(queryStringParameters._limit) || 0
-        : 100;
+        : 0;
 
     // Count
     const count = await Model.countDocuments(query).skip(start).limit(limit);
