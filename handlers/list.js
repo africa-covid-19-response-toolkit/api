@@ -1,17 +1,12 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const { getModel, handleError, handleResponse } = require('../helpers');
+const { getModel, handleError, handleResponse, initializeMongoDb } = require('../helpers');
 const { omit } = require('lodash');
 const MongoQS = require('mongo-querystring');
 
-const mongoUrl = process.env.DOCUMENT_DB_URL;
-
-const options = {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-};
-mongoose.Promise = global.Promise;
+// is it a re-used lambda instance? If so, connection is already established
+var dbConnectPromise = typeof dbConnectPromise === 'undefined' ? null : dbConnectPromise
+const initPromise = initializeMongoDb({dbConnectPromise})
 
 // Create a new Mongo QueryString parser
 const qs = new MongoQS({
@@ -22,6 +17,8 @@ const qs = new MongoQS({
 });
 
 module.exports.list = async (event, context, callback) => {
+  // ensure async connection to DB is completed
+  await initPromise
   const {
     pathParameters: { type },
     queryStringParameters,
@@ -38,10 +35,7 @@ module.exports.list = async (event, context, callback) => {
     return handleError(callback, 'noModelFound');
   }
 
-  let db = null;
   try {
-    db = await mongoose.connect(mongoUrl, options);
-
     const start =
       queryStringParameters && queryStringParameters._start
         ? parseInt(queryStringParameters._start) || null
@@ -56,15 +50,9 @@ module.exports.list = async (event, context, callback) => {
 
     // Result
     const result = await Model.find(query).skip(start).limit(limit);
-
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, { count, result });
   } catch (error) {
     console.error(error.message);
-    // Close connection.
-    if (db && db.connection) db.connection.close();
     handleError(callback, 'general', error);
   }
 };

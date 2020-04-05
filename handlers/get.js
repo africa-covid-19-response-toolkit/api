@@ -1,17 +1,15 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const { getModel, handleError, handleResponse } = require('../helpers');
+const { getModel, handleError, handleResponse, initializeMongoDb } = require('../helpers');
 
-const mongoUrl = process.env.DOCUMENT_DB_URL;
-
-const options = {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-};
-mongoose.Promise = global.Promise;
+// is it a re-used lambda instance? If so, connection is already established
+var dbConnectPromise = typeof dbConnectPromise === 'undefined' ? null : dbConnectPromise
+const initPromise = initializeMongoDb({dbConnectPromise})
 
 module.exports.get = async (event, context, callback) => {
+  // ensure async connection to DB is completed
+  await initPromise
+
   const {
     pathParameters: { type, id },
   } = event;
@@ -21,21 +19,15 @@ module.exports.get = async (event, context, callback) => {
   if (!Model) {
     return handleError(callback, 'noModelFound');
   }
-  let db = null;
+
   try {
-    db = await mongoose.connect(mongoUrl, options);
 
     // Result
     const result = await Model.findOne({ _id: id });
 
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, result);
   } catch (error) {
     console.error(error.message);
-    // Close connection.
-    if (db && db.connection) db.connection.close();
     handleError(callback, 'general', error);
   }
 };

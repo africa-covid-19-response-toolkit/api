@@ -5,6 +5,7 @@ const {
   Surveillance,
   TollFree,
 } = require('../models');
+const mongoose = require('mongoose')
 
 /**
  * Helper function to avoid:
@@ -145,3 +146,28 @@ module.exports.handleError = (callback, name, error = '') => {
   }
   callback(null, response);
 };
+
+// Share DB connection across multiple Lambda invocations 
+// instead of re-connecting for each request
+// https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html
+module.exports.initializeMongoDb = async ({
+    options = {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    },
+    dbConnectPromise = null
+  }
+) => {
+  if (dbConnectPromise) {
+    return dbConnectPromise
+  }
+
+  try {
+    mongoose.Promise = global.Promise;
+    return await mongoose.connect(process.env.DOCUMENT_DB_URL, options);
+  } catch(e) {
+    console.error('Failed to initializeMongoDb', e.message)
+    return Promise.reject()
+  }
+
+}
