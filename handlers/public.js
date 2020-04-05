@@ -8,10 +8,9 @@ const initPromise = initializeMongoDb({dbConnectPromise})
 
 
 module.exports.create = async (event, context, callback) => {
-  // ensure async connection to DB is completed
-  await initPromise
-
-  const type = 'communities';
+  const {
+    pathParameters: { type },
+  } = event;
 
   const Model = getModel(type);
 
