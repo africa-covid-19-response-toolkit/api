@@ -24,6 +24,7 @@ functions:
 
   public-create:
     handler: handlers/public.create
+    corse: true
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
@@ -33,7 +34,7 @@ functions:
         - ${self:provider.environment.VPC_SUBNET_GROUP_3}
     events:
       - http:
-          path: gateway/community-report
+          path: gateway/community-report/{type}
           method: post
 
   create:

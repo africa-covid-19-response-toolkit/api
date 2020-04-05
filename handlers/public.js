@@ -12,7 +12,9 @@ const options = {
 mongoose.Promise = global.Promise;
 
 module.exports.create = async (event, context, callback) => {
-  const type = 'communities';
+  const {
+    pathParameters: { type },
+  } = event;
 
   const Model = getModel(type);
 
