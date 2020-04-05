@@ -1,6 +1,5 @@
 'use strict';
 
-const mongoose = require('mongoose');
 const { getModel, handleError, handleResponse, initializeMongoDb } = require('../helpers');
 
 // is it a re-used lambda instance? If so, connection is already established
