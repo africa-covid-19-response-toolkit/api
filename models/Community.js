@@ -28,6 +28,18 @@ const CommunitySchema = new Schema(
     healthFacility: { type: Boolean },
     occupation: { type: String },
     dataSource: { type: String },
+    fatigue: { type: Boolean },
+    underlyingConditions: {
+      chronicLungDisease: { type: Boolean },
+      heartDisease: { type: Boolean },
+      liverDisease: { type: Boolean },
+      renalDisease: { type: Boolean },
+      autoimmuneDisease: { type: Boolean },
+      cancer: { type: Boolean },
+      diabetes: { type: Boolean },
+      hiv: { type: Boolean },
+      pregnancy: { type: Boolean },
+    },
   },
   {
     timestamps: true,

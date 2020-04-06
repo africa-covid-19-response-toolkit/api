@@ -148,6 +148,18 @@ Please note: This API supports the following types:
   "healthFacility": false,
   "occupation": "Merchant(Animal)",
   "dataSource": "bot"
+  "fatigue": false
+  "underlyingConditions": {
+    "chronicLungDisease": false,
+    "heartDisease": false,
+    "liverDisease": false,
+    "renalDisease": false,
+    "autoimmuneDisease": false,
+    "cancer": false,
+    "diabetes": false,
+    "hiv": false,
+    "pregnancy": false,
+  },
 }
 ```
 
@@ -212,6 +224,18 @@ Please note: This API supports the following types:
   "otherHotelName": "",
   "email": "asdfasdf@asdfa.com",
   "language": ""
+  "fatigue": false
+  "underlyingConditions": {
+    "chronicLungDisease": false,
+    "heartDisease": false,
+    "liverDisease": false,
+    "renalDisease": false,
+    "autoimmuneDisease": false,
+    "cancer": false,
+    "diabetes": false,
+    "hiv": false,
+    "pregnancy": false,
+  },  
 }
 ```
 
