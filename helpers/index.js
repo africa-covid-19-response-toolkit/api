@@ -122,6 +122,7 @@ module.exports.handleResponse = (callback, body, statusCode = 200) => {
 
 module.exports.handleError = (callback, name, error = '') => {
   const response = {
+    statusCode: error.statusCode || 500,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true,
@@ -132,15 +133,16 @@ module.exports.handleError = (callback, name, error = '') => {
   };
   switch (name) {
     case 'noModelFound':
-      response.statusCode = 500;
       response.body = JSON.stringify({
         message: error.message || 'Unknown type provided.',
       });
       break;
     case 'ValidationError':
+      response.body = JSON.stringify({
+        message: error.message || 'Validation error occurred',
+      });
       break;
     default:
-      response.statusCode = error.statusCode || 500;
       break;
   }
   callback(null, response);
