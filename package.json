@@ -10,6 +10,7 @@
     "postinstall": "mkdir mongo-db"
   },
   "dependencies": {
+    "flat": "^5.0.0",
     "lodash": "^4.17.15",
     "mongo-querystring": "^4.1.1",
     "mongoose": "^5.9.7"

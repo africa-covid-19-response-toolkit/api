@@ -1,6 +1,8 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const flatten = require('flat');
+
 const { getModel, handleError, handleResponse } = require('../helpers');
 
 const mongoUrl = process.env.DOCUMENT_DB_URL;
@@ -22,12 +24,16 @@ module.exports.update = async (event, context, callback) => {
     return handleError(callback, 'noModelFound');
   }
 
-  const data = JSON.parse(event.body);
+  let data = JSON.parse(event.body);
   let db = null;
   try {
     db = await mongoose.connect(mongoUrl, options);
 
-    const result = await Model.findOneAndUpdate({ _id: id }, data, {
+    // Useful for partial object update.
+    // Converts : {"someObject": { "someKey": "someValue"}} to {"someObject.someKey": "someValue"}
+    data = flatten(data);
+
+    const result = await Model.findByIdAndUpdate({ _id: id }, data, {
       new: true,
     });
 
