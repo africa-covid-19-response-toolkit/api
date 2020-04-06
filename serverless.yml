@@ -24,7 +24,7 @@ functions:
 
   public-create:
     handler: handlers/public.create
-    corse: true
+    cors: true
     vpc:
       securityGroupIds:
         - ${self:provider.environment.VPC_SECURITY_GROUP_1}
