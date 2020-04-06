@@ -58,6 +58,9 @@ const PassengerSchema = new Schema(
       hiv: { type: Boolean },
       pregnancy: { type: Boolean },
     },
+    haveSex: { type: Boolean },
+    animalMarket: { type: Boolean },
+    healthFacility: { type: Boolean },
   },
   {
     timestamps: true,

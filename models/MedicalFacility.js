@@ -34,6 +34,18 @@ const MedicalFacilitySchema = new Schema(
     receiverName: { type: String },
     source: { type: String },
     formStatus: { type: String },
+    fatigue: { type: Boolean },
+    underlyingConditions: {
+      chronicLungDisease: { type: Boolean },
+      heartDisease: { type: Boolean },
+      liverDisease: { type: Boolean },
+      renalDisease: { type: Boolean },
+      autoimmuneDisease: { type: Boolean },
+      cancer: { type: Boolean },
+      diabetes: { type: Boolean },
+      hiv: { type: Boolean },
+      pregnancy: { type: Boolean },
+    },
   },
   {
     timestamps: true,

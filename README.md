@@ -235,7 +235,10 @@ Please note: This API supports the following types:
     "diabetes": false,
     "hiv": false,
     "pregnancy": false,
-  },  
+  }, 
+  "haveSex": false,
+  "animalMarket": false
+  "healthFacility": false 
 }
 ```
 
@@ -274,6 +277,18 @@ Please note: This API supports the following types:
   "receiverName": "string",
   "source": "string",
   "formStatus": "string"
+  "fatigue": false
+  "underlyingConditions": {
+    "chronicLungDisease": false,
+    "heartDisease": false,
+    "liverDisease": false,
+    "renalDisease": false,
+    "autoimmuneDisease": false,
+    "cancer": false,
+    "diabetes": false,
+    "hiv": false,
+    "pregnancy": false,
+  },
 }
 ```
 
