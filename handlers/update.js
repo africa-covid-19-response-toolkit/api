@@ -36,9 +36,8 @@ module.exports.update = async (event, context, callback) => {
 
     handleResponse(callback, result);
   } catch (error) {
-    console.error(error.message);
     // Close connection.
     if (db && db.connection) db.connection.close();
-    handleError(callback, 'general', error);
+    handleError(callback, '', error);
   }
 };

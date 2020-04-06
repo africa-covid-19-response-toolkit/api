@@ -33,9 +33,8 @@ module.exports.delete = async (event, context, callback) => {
 
     handleResponse(callback, true, 200);
   } catch (error) {
-    console.error(error.message);
     // Close connection.
     if (db && db.connection) db.connection.close();
-    handleError(callback, 'general', error);
+    handleError(callback, '', error);
   }
 };

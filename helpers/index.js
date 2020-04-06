@@ -121,6 +121,7 @@ module.exports.handleResponse = (callback, body, statusCode = 200) => {
 };
 
 module.exports.handleError = (callback, name, error = '') => {
+  console.error(error.message);
   const response = {
     statusCode: error.statusCode || 500,
     headers: {
@@ -128,9 +129,11 @@ module.exports.handleError = (callback, name, error = '') => {
       'Access-Control-Allow-Credentials': true,
     },
     body: JSON.stringify({
-      message: `Something went wrong`,
+      message: error.message || 'Something went wrong.',
     }),
   };
+  if (!name && error.name) name = error.name;
+
   switch (name) {
     case 'noModelFound':
       response.body = JSON.stringify({
@@ -139,7 +142,12 @@ module.exports.handleError = (callback, name, error = '') => {
       break;
     case 'ValidationError':
       response.body = JSON.stringify({
-        message: error.message || 'Validation error occurred',
+        message: error.message || 'Validation error occurred.',
+      });
+      break;
+    case 'MongoParseError':
+      response.body = JSON.stringify({
+        message: error.message || 'Unable to connect to database.',
       });
       break;
     default:
