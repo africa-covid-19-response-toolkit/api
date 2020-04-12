@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const AddressModel = require('./Address');
+const SymptomModel = require('./Symptom');
+
 const CommunitySchema = new Schema(
   {
     firstName: { type: String, required: true, max: 100 },
@@ -9,26 +12,18 @@ const CommunitySchema = new Schema(
     age: { type: Number, required: true },
     sex: { type: String, required: true },
     language: { type: String },
-    region: { type: String },
-    subcityOrZone: { type: String },
-    sefer: { type: String },
-    woreda: { type: String },
-    kebele: { type: String },
-    houseNumber: { type: String },
+    address: { type: AddressModel.schema },
+    symptom: { type: SymptomModel.schema },
     phoneNumber: { type: String },
     latitude: { type: Number },
     longitude: { type: Number },
-    fever: { type: Boolean },
-    cough: { type: Boolean },
-    shortnessOfBreath: { type: Boolean },
     formStatus: { type: String },
     travelHx: { type: Boolean },
-    haveSex: { type: Boolean },
-    animalMarket: { type: Boolean },
+    contactWithSuspected: { type: Boolean },
+    contactWithConfirmed: { type: Boolean },
     healthFacility: { type: Boolean },
     occupation: { type: String },
     dataSource: { type: String },
-    fatigue: { type: Boolean },
     underlyingConditions: {
       chronicLungDisease: { type: Boolean },
       heartDisease: { type: Boolean },

@@ -1,70 +1,30 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const AddressModel = require('./Address');
+const SymptomModel = require('./Symptom');
+
 const TollFreeSchema = new Schema(
   {
     firstName: { type: String, required: true, max: 100 },
     middleName: { type: String, max: 100 },
     lastName: { type: String, required: true, max: 100 },
-    age: { type: Number },
-    sex: { type: String },
-    reportRegion: {
-      id: { type: Number },
-      name: { type: String },
-    },
-    region: {
-      id: { type: Number },
-      name: { type: String },
-      latitude: { type: Number },
-      longitude: { type: Number },
-      description: { type: String },
-      createdAt: { type: Date },
-      updatedAt: { type: Date },
-      deletedAt: { type: Date },
-    },
-    zone: {
-      id: { type: Number },
-      name: { type: String },
-    },
-    woreda: {
-      id: { type: Number },
-      name: { type: String },
-    },
-    city: {
-      id: { type: Number },
-      name: { type: String },
-    },
-    subcity: {
-      id: { type: Number },
-      name: { type: String },
-    },
-    kebele: {
-      id: { type: Number },
-      name: { type: String },
-    },
+    age: { type: Number, required: true },
+    sex: { type: String, required: true },
+    reportingFrom: { type: AddressModel.schema },
+    address: { type: AddressModel.schema },
+    symptom: { type: SymptomModel.schema },
     createdBy: {
-      id: { type: Number },
-      firstName: { type: String, max: 100 },
+      firstName: { type: String, required: true, max: 100 },
       middleName: { type: String, max: 100 },
-      lastName: { type: String, max: 100 },
+      lastName: { type: String, required: true, max: 100 },
       email: {
         type: String,
         lowercase: true,
         match: [/\S+@\S+\.\S+/, 'is invalid'],
       },
       phoneNumber: { type: String },
-      region: {
-        id: { type: Number },
-        firstName: { type: String, max: 100 },
-        middleName: { type: String, max: 100 },
-        lastName: { type: String, max: 100 },
-        email: {
-          type: String,
-          lowercase: true,
-          match: [/\S+@\S+\.\S+/, 'is invalid'],
-        },
-        phoneNumber: { type: String },
-      },
+      address: { type: AddressModel.schema },
       role: {
         id: { type: Number },
         name: { type: String },

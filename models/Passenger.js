@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const AddressModel = require('./Address');
+const SymptomModel = require('./Symptom');
+
 const PassengerSchema = new Schema(
   {
     firstName: { type: String, required: true, max: 100 },
     middleName: { type: String, max: 100 },
     lastName: { type: String, required: true, max: 100 },
-    gender: { type: String },
+    age: { type: Number, required: true },
+    sex: { type: String, required: true },
     dateOfBirth: { type: Date },
     nationality: { type: String },
     passportNo: { type: String },
@@ -16,27 +20,30 @@ const PassengerSchema = new Schema(
     flightNumber: { type: String },
     seatNumber: { type: String },
     transitFrom: { type: String },
-    fever: { type: Boolean },
-    shortnessOfBreath: { type: Boolean },
-    cough: { type: Boolean },
+    address: { type: AddressModel.schema },
+    symptom: { type: SymptomModel.schema },
+    contactWithSuspected: { type: Boolean },
+    contactWithConfirmed: { type: Boolean },
     dependents: [
       {
-        firstName: { type: String, max: 100 },
+        firstName: { type: String, required: true, max: 100 },
         middleName: { type: String, max: 100 },
-        lastName: { type: String, max: 100 },
-        gender: { type: String },
+        lastName: { type: String, required: true, max: 100 },
+        age: { type: Number, required: true },
+        sex: { type: String, required: true },
         dateOfBirth: { type: Date },
         nationality: { type: String },
         passportNo: { type: String },
         seatNumber: { type: String },
-        fever: { type: Boolean },
-        shortnessOfBreath: { type: Boolean },
-        cough: { type: Boolean },
+        address: { type: AddressModel.schema },
+        symptom: { type: SymptomModel.schema },
         travelFrom: { type: String },
         transitFrom: { type: String },
         phoneNumber: { type: String },
         flightNumber: { type: String },
-        selectedLanguage: { type: String },
+        language: { type: String },
+        contactWithSuspected: { type: Boolean },
+        contactWithConfirmed: { type: Boolean },
       },
     ],
     otherHotelName: { type: String },
@@ -46,7 +53,6 @@ const PassengerSchema = new Schema(
       match: [/\S+@\S+\.\S+/, 'is invalid'],
     },
     language: { type: String },
-    fatigue: { type: Boolean },
     underlyingConditions: {
       chronicLungDisease: { type: Boolean },
       heartDisease: { type: Boolean },
@@ -58,9 +64,6 @@ const PassengerSchema = new Schema(
       hiv: { type: Boolean },
       pregnancy: { type: Boolean },
     },
-    haveSex: { type: Boolean },
-    animalMarket: { type: Boolean },
-    healthFacility: { type: Boolean },
   },
   {
     timestamps: true,
