@@ -7,20 +7,27 @@
   "scripts": {
     "dev": "export IS_OFFLINE=true LOCAL_DB_URL=mongodb://localhost:27017 && serverless offline start -s dev",
     "debug": "export SLS_DEBUG=* IS_OFFLINE=true LOCAL_DB_URL=mongodb://localhost:27017 && node --inspect-brk=9229 ./node_modules/.bin/serverless offline start -s dev",
-    "postinstall": "mkdir mongo-db"
+    "postinstall": "mkdir -p mongo-db",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
-    "flat": "^5.0.0",
     "lodash": "^4.17.15",
     "mongo-querystring": "^4.1.1",
     "mongoose": "^5.9.7"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "husky": "^4.2.3",
     "serverless": "^1.67.0",
     "serverless-domain-manager": "^3.3.1",
     "serverless-offline": "^6.1.2"
   },
   "engines": {
     "node": "^12"
-  }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+ }
 }
