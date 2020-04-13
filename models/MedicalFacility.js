@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
-const EmailSchema = require('./common/Email');
+const AddressSchema = require('./common/address');
+const SymptomSchema = require('./common/symptom');
+const UnderlyingConditionsSchema = require('./common/underlyingConditions');
+const EmailSchema = require('./common/email');
 
 const MedicalFacilitySchema = new Schema(
   {
@@ -15,8 +15,8 @@ const MedicalFacilitySchema = new Schema(
     email: EmailSchema,
     age: { type: Number, required: true },
     sex: { type: String, required: true },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
+    address: { type: AddressSchema },
+    symptom: { type: SymptomSchema },
     phoneNumber: { type: String },
     occupation: { type: String },
     callDate: { type: Date },
@@ -28,7 +28,9 @@ const MedicalFacilitySchema = new Schema(
     receiverName: { type: String },
     source: { type: String },
     formStatus: { type: String },
-    underlyingConditions: UnderlyingConditionsSchema,
+    underlyingConditions: {
+      type: UnderlyingConditionsSchema
+    },
   },
   {
     timestamps: true,

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
-const EmailSchema = require('./common/Email');
+const AddressSchema = require('./common/address');
+const SymptomSchema = require('./common/symptom');
+const UnderlyingConditionsSchema = require('./common/underlyingConditions');
+const EmailSchema = require('./common/email');
 
 const PassengerSchema = new Schema(
   {
@@ -22,8 +22,8 @@ const PassengerSchema = new Schema(
     flightNumber: { type: String },
     seatNumber: { type: String },
     transitFrom: { type: String },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
+    address: { type: AddressSchema },
+    symptom: { type: SymptomSchema },
     contactWithSuspected: { type: Boolean },
     contactWithConfirmed: { type: Boolean },
     dependents: [
@@ -37,8 +37,8 @@ const PassengerSchema = new Schema(
         nationality: { type: String },
         passportNo: { type: String },
         seatNumber: { type: String },
-        address: { type: AddressModel.schema },
-        symptom: { type: SymptomModel.schema },
+        address: { type: AddressSchema },
+        symptom: { type: SymptomSchema },
         travelFrom: { type: String },
         transitFrom: { type: String },
         phoneNumber: { type: String },
@@ -51,7 +51,9 @@ const PassengerSchema = new Schema(
     otherHotelName: { type: String },
     email: EmailSchema,
     language: { type: String },
-    underlyingConditions: UnderlyingConditionsSchema,
+    underlyingConditions: {
+      type: UnderlyingConditionsSchema
+    },
   },
   {
     timestamps: true,

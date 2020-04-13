@@ -12,4 +12,4 @@ const SymptomSchema = new Schema({
 });
 
 // Export the model
-module.exports = mongoose.model('Symptom', SymptomSchema);
+module.exports = SymptomSchema;

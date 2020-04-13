@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
+const AddressSchema = require('./common/address');
+const SymptomSchema = require('./common/symptom');
+const UnderlyingConditionsSchema = require('./common/underlyingConditions');
 
 const CommunitySchema = new Schema(
   {
@@ -13,8 +13,8 @@ const CommunitySchema = new Schema(
     age: { type: Number, required: true },
     sex: { type: String, required: true },
     language: { type: String },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
+    address: { type: AddressSchema },
+    symptom: { type: SymptomSchema },
     phoneNumber: { type: String },
     latitude: { type: Number },
     longitude: { type: Number },
@@ -25,7 +25,9 @@ const CommunitySchema = new Schema(
     healthFacility: { type: Boolean },
     occupation: { type: String },
     dataSource: { type: String },
-    underlyingConditions: UnderlyingConditions,
+    underlyingConditions: {
+      type: UnderlyingConditionsSchema
+    },
   },
   {
     timestamps: true,

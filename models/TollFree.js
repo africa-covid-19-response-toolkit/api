@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const EmailSchema = require('./common/Email');
+const AddressSchema = require('./common/address');
+const SymptomSchema = require('./common/symptom');
+const EmailSchema = require('./common/email');
 
 const TollFreeSchema = new Schema(
   {
@@ -12,16 +12,16 @@ const TollFreeSchema = new Schema(
     lastName: { type: String, required: true, max: 100 },
     age: { type: Number, required: true },
     sex: { type: String, required: true },
-    reportingFrom: { type: AddressModel.schema },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
+    reportingFrom: { type: AddressSchema },
+    address: { type: AddressSchema },
+    symptom: { type: SymptomSchema },
     createdBy: {
       firstName: { type: String, required: true, max: 100 },
       middleName: { type: String, max: 100 },
       lastName: { type: String, required: true, max: 100 },
       email: EmailSchema,
       phoneNumber: { type: String },
-      address: { type: AddressModel.schema },
+      address: { type: AddressSchema },
       role: {
         id: { type: Number },
         name: { type: String },

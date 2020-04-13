@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const EmailSchema = require('./common/Email');
+const AddressSchema = require('./common/address');
+const SymptomSchema = require('./common/symptom');
+const EmailSchema = require('./common/email');
 
 const SurveillanceSchema = new Schema(
   {
@@ -14,8 +14,8 @@ const SurveillanceSchema = new Schema(
     email: EmailSchema,
     age: { type: Number, required: true },
     sex: { type: String, required: true },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
+    address: { type: AddressSchema },
+    symptom: { type: SymptomSchema },
     phoneNumber: { type: String },
     occupation: { type: String },
     callDate: { type: Date },
