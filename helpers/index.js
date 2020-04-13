@@ -86,8 +86,6 @@ module.exports.getFilterOperator = (op) => {
       return '>';
     case 'gte':
       return '>=';
-    case 'lt':
-      return '<';
     case 'lte':
       return '<=';
     default:
