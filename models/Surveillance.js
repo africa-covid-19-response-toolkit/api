@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const AddressModel = require('./Address');
 const SymptomModel = require('./Symptom');
+const EmailSchema = require('./common/Email');
 
 const SurveillanceSchema = new Schema(
   {
@@ -10,11 +11,7 @@ const SurveillanceSchema = new Schema(
     middleName: { type: String, max: 100 },
     lastName: { type: String, required: true, max: 100 },
     nationality: { type: String },
-    email: {
-      type: String,
-      lowercase: true,
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-    },
+    email: EmailSchema,
     age: { type: Number, required: true },
     sex: { type: String, required: true },
     address: { type: AddressModel.schema },

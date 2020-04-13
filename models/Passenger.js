@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const AddressModel = require('./Address');
 const SymptomModel = require('./Symptom');
+const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
+const EmailSchema = require('./common/Email');
 
 const PassengerSchema = new Schema(
   {
@@ -47,23 +49,9 @@ const PassengerSchema = new Schema(
       },
     ],
     otherHotelName: { type: String },
-    email: {
-      type: String,
-      lowercase: true,
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-    },
+    email: EmailSchema,
     language: { type: String },
-    underlyingConditions: {
-      chronicLungDisease: { type: Boolean },
-      heartDisease: { type: Boolean },
-      liverDisease: { type: Boolean },
-      renalDisease: { type: Boolean },
-      autoimmuneDisease: { type: Boolean },
-      cancer: { type: Boolean },
-      diabetes: { type: Boolean },
-      hiv: { type: Boolean },
-      pregnancy: { type: Boolean },
-    },
+    underlyingConditions: UnderlyingConditionsSchema,
   },
   {
     timestamps: true,

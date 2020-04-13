@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const AddressModel = require('./Address');
 const SymptomModel = require('./Symptom');
+const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
 
 const CommunitySchema = new Schema(
   {
@@ -24,17 +25,7 @@ const CommunitySchema = new Schema(
     healthFacility: { type: Boolean },
     occupation: { type: String },
     dataSource: { type: String },
-    underlyingConditions: {
-      chronicLungDisease: { type: Boolean },
-      heartDisease: { type: Boolean },
-      liverDisease: { type: Boolean },
-      renalDisease: { type: Boolean },
-      autoimmuneDisease: { type: Boolean },
-      cancer: { type: Boolean },
-      diabetes: { type: Boolean },
-      hiv: { type: Boolean },
-      pregnancy: { type: Boolean },
-    },
+    underlyingConditions: UnderlyingConditions,
   },
   {
     timestamps: true,
