@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const AddressModel = require('./Address');
 const SymptomModel = require('./Symptom');
+const EmailSchema = require('./common/Email');
 
 const TollFreeSchema = new Schema(
   {
@@ -18,11 +19,7 @@ const TollFreeSchema = new Schema(
       firstName: { type: String, required: true, max: 100 },
       middleName: { type: String, max: 100 },
       lastName: { type: String, required: true, max: 100 },
-      email: {
-        type: String,
-        lowercase: true,
-        match: [/\S+@\S+\.\S+/, 'is invalid'],
-      },
+      email: EmailSchema,
       phoneNumber: { type: String },
       address: { type: AddressModel.schema },
       role: {

@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const AddressModel = require('./Address');
 const SymptomModel = require('./Symptom');
+const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
+const EmailSchema = require('./common/Email');
 
 const MedicalFacilitySchema = new Schema(
   {
@@ -10,11 +12,7 @@ const MedicalFacilitySchema = new Schema(
     middleName: { type: String, max: 100 },
     lastName: { type: String, required: true, max: 100 },
     nationality: { type: String },
-    email: {
-      type: String,
-      lowercase: true,
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
-    },
+    email: EmailSchema,
     age: { type: Number, required: true },
     sex: { type: String, required: true },
     address: { type: AddressModel.schema },
@@ -30,17 +28,7 @@ const MedicalFacilitySchema = new Schema(
     receiverName: { type: String },
     source: { type: String },
     formStatus: { type: String },
-    underlyingConditions: {
-      chronicLungDisease: { type: Boolean },
-      heartDisease: { type: Boolean },
-      liverDisease: { type: Boolean },
-      renalDisease: { type: Boolean },
-      autoimmuneDisease: { type: Boolean },
-      cancer: { type: Boolean },
-      diabetes: { type: Boolean },
-      hiv: { type: Boolean },
-      pregnancy: { type: Boolean },
-    },
+    underlyingConditions: UnderlyingConditionsSchema,
   },
   {
     timestamps: true,
