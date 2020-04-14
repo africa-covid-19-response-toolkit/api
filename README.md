@@ -54,6 +54,12 @@ In order to deploy the endpoint simply run
 serverless deploy
 ```
 
+## Testing
+
+```bash
+npm test
+```
+
 API Documentation
 https://documenter.getpostman.com/view/370266/SzYW3L6e?version=latest
 
