@@ -1,22 +1,14 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const EmailSchema = require('./common/Email');
+const EmailSchema = require('./common/email');
+const baseFields = require('./common/base');
 
 const SurveillanceSchema = new Schema(
   {
-    firstName: { type: String, required: true, max: 100 },
-    middleName: { type: String, max: 100 },
-    lastName: { type: String, required: true, max: 100 },
+    ...baseFields,
     nationality: { type: String },
     email: EmailSchema,
-    age: { type: Number, required: true },
-    sex: { type: String, required: true },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
-    phoneNumber: { type: String },
     occupation: { type: String },
     callDate: { type: Date },
     callerType: { type: String },

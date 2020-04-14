@@ -1,18 +1,13 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 
-const AddressModel = require('./Address');
-const SymptomModel = require('./Symptom');
-const UnderlyingConditionsSchema = require('./common/UnderlyingConditions');
-const EmailSchema = require('./common/Email');
+const UnderlyingConditionsSchema = require('./common/underlyingConditions');
+const EmailSchema = require('./common/email');
+const baseFields = require('./common/base');
 
 const PassengerSchema = new Schema(
   {
-    firstName: { type: String, required: true, max: 100 },
-    middleName: { type: String, max: 100 },
-    lastName: { type: String, required: true, max: 100 },
-    age: { type: Number, required: true },
-    sex: { type: String, required: true },
+    ...baseFields,
     dateOfBirth: { type: Date },
     nationality: { type: String },
     passportNo: { type: String },
@@ -22,26 +17,17 @@ const PassengerSchema = new Schema(
     flightNumber: { type: String },
     seatNumber: { type: String },
     transitFrom: { type: String },
-    address: { type: AddressModel.schema },
-    symptom: { type: SymptomModel.schema },
     contactWithSuspected: { type: Boolean },
     contactWithConfirmed: { type: Boolean },
     dependents: [
       {
-        firstName: { type: String, required: true, max: 100 },
-        middleName: { type: String, max: 100 },
-        lastName: { type: String, required: true, max: 100 },
-        age: { type: Number, required: true },
-        sex: { type: String, required: true },
+        ...baseFields,
         dateOfBirth: { type: Date },
         nationality: { type: String },
         passportNo: { type: String },
         seatNumber: { type: String },
-        address: { type: AddressModel.schema },
-        symptom: { type: SymptomModel.schema },
         travelFrom: { type: String },
         transitFrom: { type: String },
-        phoneNumber: { type: String },
         flightNumber: { type: String },
         language: { type: String },
         contactWithSuspected: { type: Boolean },
@@ -51,7 +37,9 @@ const PassengerSchema = new Schema(
     otherHotelName: { type: String },
     email: EmailSchema,
     language: { type: String },
-    underlyingConditions: UnderlyingConditionsSchema,
+    underlyingConditions: {
+      type: UnderlyingConditionsSchema
+    },
   },
   {
     timestamps: true,

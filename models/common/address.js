@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 
 const AddressSchema = new Schema({
   country: { type: String, required: true, max: 100 },
@@ -13,4 +13,4 @@ const AddressSchema = new Schema({
 });
 
 // Export the model
-module.exports = mongoose.model('Address', AddressSchema);
+module.exports = AddressSchema;
