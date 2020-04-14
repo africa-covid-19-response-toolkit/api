@@ -1,7 +1,6 @@
 const AddressSchema = require('./address');
 const SymptomSchema = require('./symptom');
 
-
 const baseFields = {
     firstName: { type: String, required: true, max: 100 },
     middleName: { type: String, max: 100 },
