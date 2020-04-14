@@ -1,60 +1,49 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable, prepUpdateParams } = require('../helpers');
+const mongoose = require('mongoose');
+const flatten = require('flat');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const { getModel, handleError, handleResponse } = require('../helpers');
 
-module.exports.update = (event, context, callback) => {
+const mongoUrl = process.env.DOCUMENT_DB_URL;
+
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
+
+module.exports.update = async (event, context, callback) => {
   const {
     pathParameters: { type, id },
   } = event;
 
-  const table = getTable(type);
+  const Model = getModel(type);
 
-  if (!table)
-    callback(null, {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: { message: `Unknown type provided. Type name: ${type}` },
+  if (!Model) {
+    return handleError(callback, 'noModelFound');
+  }
+
+  let data = JSON.parse(event.body);
+  let db = null;
+  try {
+    db = await mongoose.connect(mongoUrl, options);
+
+    // Useful for partial object update.
+    // Converts : {"someObject": { "someKey": "someValue"}} to {"someObject.someKey": "someValue"}
+    data = flatten(data);
+
+    const result = await Model.findByIdAndUpdate({ _id: id }, data, {
+      new: true,
     });
 
-  const timestamp = new Date().getTime();
-  const data = JSON.parse(event.body);
+    // Close connection
+    db.connection.close();
 
-  const params = {
-    TableName: table,
-    Key: {
-      id,
-    },
-    ...prepUpdateParams({ ...data, updatedAt: timestamp }),
-  };
-
-  // update the {type} in the database
-  dynamoDb.update(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'application/json' },
-        body: { message: `Couldn't fetch the ${type} item.` },
-      });
-      return;
-    }
-
-    // create a response
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(result.Attributes),
-    };
-    callback(null, response);
-  });
+    handleResponse(callback, result);
+  } catch (error) {
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, '', error);
+  }
 };

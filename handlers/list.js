@@ -1,53 +1,69 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable } = require('../helpers');
+const mongoose = require('mongoose');
+const { getModel, handleError, handleResponse } = require('../helpers');
+const { omit } = require('lodash');
+const MongoQS = require('mongo-querystring');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const mongoUrl = process.env.DOCUMENT_DB_URL;
 
-module.exports.list = (event, context, callback) => {
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
+
+// Create a new Mongo QueryString parser
+const qs = new MongoQS({
+  custom: {
+    bbox: 'geojson',
+    near: 'geojson', // For future use.
+  },
+});
+
+module.exports.list = async (event, context, callback) => {
   const {
     pathParameters: { type },
+    queryStringParameters,
   } = event;
 
-  const table = getTable(type);
+  // Parse the request query parameters
+  const query = queryStringParameters
+    ? qs.parse(omit(queryStringParameters, ['_start', '_limit'])) // exclude _start and _limit.
+    : {};
 
-  if (!table)
-    callback(null, {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: { message: `Unknown type provided. Type name: ${type}` },
-    });
+  const Model = getModel(type);
 
-  const params = {
-    TableName: table,
-  };
+  if (!Model) {
+    return handleError(callback, 'noModelFound');
+  }
 
-  // fetch all {type} from the database
-  dynamoDb.scan(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: { 'Content-Type': 'application/json' },
-        body: { message: `Couldn't fetch the ${type}.` },
-      });
-      return;
-    }
+  let db = null;
+  try {
+    db = await mongoose.connect(mongoUrl, options);
 
-    // create a response
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(result.Items || []),
-    };
-    callback(null, response);
-  });
+    const start =
+      queryStringParameters && queryStringParameters._start
+        ? parseInt(queryStringParameters._start) || null
+        : null;
+    const limit =
+      queryStringParameters && queryStringParameters._limit
+        ? parseInt(queryStringParameters._limit) || null
+        : null;
+
+    // Count
+    const count = await Model.countDocuments(query).skip(start).limit(limit);
+
+    // Result
+    const result = await Model.find(query).skip(start).limit(limit);
+
+    // Close connection
+    db.connection.close();
+
+    handleResponse(callback, { count, result });
+  } catch (error) {
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, '', error);
+  }
 };

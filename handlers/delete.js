@@ -1,59 +1,40 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const { getTable } = require('../helpers');
+const mongoose = require('mongoose');
+const { getModel, handleError, handleResponse } = require('../helpers');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const mongoUrl = process.env.DOCUMENT_DB_URL;
 
-module.exports.delete = (event, context, callback) => {
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+};
+mongoose.Promise = global.Promise;
+
+module.exports.delete = async (event, context, callback) => {
   const {
     pathParameters: { type, id },
   } = event;
 
-  const table = getTable(type);
+  const Model = getModel(type);
 
-  if (!table)
-    callback(null, {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: { message: `Unknown type provided. Type name: ${type}` },
-    });
+  if (!Model) {
+    return handleError(callback, 'noModelFound');
+  }
+  let db = null;
+  try {
+    db = await mongoose.connect(mongoUrl, options);
 
-  const params = {
-    TableName: table,
-    Key: {
-      id,
-    },
-  };
+    // Temporarily removed until scopes are defined.
+    await Model.deleteOne({ _id: id });
 
-  // delete the {type} from the database
-  dynamoDb.delete(params, error => {
-    // handle potential errors
-    if (error) {
-      console.error(error);
-      callback(null, {
-        statusCode: error.statusCode || 501,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: { message: `Couldn't remove the ${type} item.` },
-      });
-      return;
-    }
+    // Close connection
+    db.connection.close();
 
-    // create a response
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
-    };
-    callback(null, response);
-  });
+    handleResponse(callback, true, 200);
+  } catch (error) {
+    // Close connection.
+    if (db && db.connection) db.connection.close();
+    handleError(callback, '', error);
+  }
 };
