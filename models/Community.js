@@ -1,21 +1,13 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose
 
-const AddressSchema = require('./common/address');
-const SymptomSchema = require('./common/symptom');
 const UnderlyingConditionsSchema = require('./common/underlyingConditions');
+const baseSchema = require('./common/base');
 
 const CommunitySchema = new Schema(
   {
-    firstName: { type: String, required: true, max: 100 },
-    middleName: { type: String, max: 100 },
-    lastName: { type: String, required: true, max: 100 },
-    age: { type: Number, required: true },
-    sex: { type: String, required: true },
+    ...baseSchema,
     language: { type: String },
-    address: { type: AddressSchema },
-    symptom: { type: SymptomSchema },
-    phoneNumber: { type: String },
     latitude: { type: Number },
     longitude: { type: Number },
     formStatus: { type: String },

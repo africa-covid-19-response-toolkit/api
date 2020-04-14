@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {Schema} = mongoose;
 
 const AddressSchema = require('./common/address');
-const SymptomSchema = require('./common/symptom');
 const EmailSchema = require('./common/email');
+const baseFields = require('./common/base');
+
 
 const TollFreeSchema = new Schema(
   {
-    firstName: { type: String, required: true, max: 100 },
-    middleName: { type: String, max: 100 },
-    lastName: { type: String, required: true, max: 100 },
-    age: { type: Number, required: true },
-    sex: { type: String, required: true },
+    ...baseFields,
     reportingFrom: { type: AddressSchema },
-    address: { type: AddressSchema },
-    symptom: { type: SymptomSchema },
     createdBy: {
       firstName: { type: String, required: true, max: 100 },
       middleName: { type: String, max: 100 },
@@ -36,7 +31,6 @@ const TollFreeSchema = new Schema(
       updatedAt: { type: Date },
       deletedAt: { type: Date },
     },
-    phoneNumber: { type: String },
     secondPhoneNumber: { type: String },
     occupation: { type: String },
     callerType: { type: String },
