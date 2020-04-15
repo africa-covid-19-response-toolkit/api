@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 'use strict';
 const mockedEnv = require('mocked-env');
 const expect = require('chai').expect;
