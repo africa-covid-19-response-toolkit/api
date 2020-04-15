@@ -12,6 +12,7 @@ const options = {
   useNewUrlParser: true,
 };
 mongoose.Promise = global.Promise;
+let db = null
 
 module.exports.update = async (event, context, callback) => {
   const {
@@ -25,9 +26,11 @@ module.exports.update = async (event, context, callback) => {
   }
 
   let data = JSON.parse(event.body);
-  let db = null;
+
   try {
-    db = await mongoose.connect(mongoUrl, options);
+    if (!db || db.connection.readyState !== 1) {
+      db = await mongoose.connect(mongoUrl, options);
+    }
 
     // Useful for partial object update.
     // Converts : {"someObject": { "someKey": "someValue"}} to {"someObject.someKey": "someValue"}
@@ -37,13 +40,9 @@ module.exports.update = async (event, context, callback) => {
       new: true,
     });
 
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, result);
   } catch (error) {
-    // Close connection.
-    if (db && db.connection) db.connection.close();
+    
     handleError(callback, '', error);
   }
 };

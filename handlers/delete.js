@@ -11,6 +11,8 @@ const options = {
 };
 mongoose.Promise = global.Promise;
 
+let db = null
+
 module.exports.delete = async (event, context, callback) => {
   const {
     pathParameters: { type, id },
@@ -21,20 +23,18 @@ module.exports.delete = async (event, context, callback) => {
   if (!Model) {
     return handleError(callback, 'noModelFound');
   }
-  let db = null;
+  
   try {
-    db = await mongoose.connect(mongoUrl, options);
+    if (!db || db.connection.readyState !== 1) {
+      db = await mongoose.connect(mongoUrl, options);
+    }
 
     // Temporarily removed until scopes are defined.
     await Model.deleteOne({ _id: id });
 
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, true, 200);
   } catch (error) {
-    // Close connection.
-    if (db && db.connection) db.connection.close();
+    
     handleError(callback, '', error);
   }
 };
