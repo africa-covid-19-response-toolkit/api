@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="ACRT API Gateway" src="acrt_19_api_gateway.png" width="650px">
+  <img alt="ACRT API Gateway" src="acrt_api_gateway.png" width="650px">
 </div>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
