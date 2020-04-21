@@ -1,5 +1,5 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <!--
@@ -532,6 +532,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/naody"><img src="https://avatars3.githubusercontent.com/u/1115720?v=4" width="100px;" alt=""/><br /><sub><b>Naod Yeheyes</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/api-gateway/commits?author=naody" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/abelhbeyene"><img src="https://avatars1.githubusercontent.com/u/12272815?v=4" width="100px;" alt=""/><br /><sub><b>Abel</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/api-gateway/commits?author=abelhbeyene" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/nabebe"><img src="https://avatars2.githubusercontent.com/u/17017927?v=4" width="100px;" alt=""/><br /><sub><b>Nati Abebe</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/api-gateway/commits?author=nabebe" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.twitter.com/mikeendale"><img src="https://avatars1.githubusercontent.com/u/430112?v=4" width="100px;" alt=""/><br /><sub><b>Mike Endale</b></sub></a><br /><a href="https://github.com/Ethiopia-COVID19/api-gateway/commits?author=dotmike" title="Code">💻</a></td>
   </tr>
 </table>
 
