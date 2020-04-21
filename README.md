@@ -1,7 +1,8 @@
-<!--
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+<!--
 title: 'Ethiopia COVID-19 API Gateway'
 description: 'This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. covid19.et project will use it to retrieve data for dashboard and write data.'
 layout: Doc
@@ -9,6 +10,7 @@ framework: v1
 platform: AWS
 language: nodeJS
 -->
+
 # API for writing/retrieving COVID-19 data
 
 This API will be utilised by all applications that need to write/retrieve Ethiopia Covid19 data. E.g. [covid19.et](https://github.com/Ethiopia-COVID19/Covid19.ET) project will use it to retrieve data for dashboard and write data
