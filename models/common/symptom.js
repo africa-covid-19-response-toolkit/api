@@ -11,5 +11,4 @@ const SymptomSchema = new Schema({
   feelingUnwell: { type: Boolean },
 });
 
-// Export the model
 module.exports = SymptomSchema;

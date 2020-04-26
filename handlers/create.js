@@ -11,6 +11,8 @@ const options = {
 };
 mongoose.Promise = global.Promise;
 
+let db = null
+
 module.exports.create = async (event, context, callback) => {
   const {
     pathParameters: { type },
@@ -21,21 +23,18 @@ module.exports.create = async (event, context, callback) => {
   if (!Model) {
     return handleError(callback, 'noModelFound');
   }
-  let db = null;
+
   const data = JSON.parse(event.body);
 
   try {
-    db = await mongoose.connect(mongoUrl, options);
+    if (!db || db.connection.readyState !== 1) {
+      db = await mongoose.connect(mongoUrl, options);
+    }
 
     const result = await Model.create(data);
 
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, result, 201);
   } catch (error) {
-    // Close connection.
-    if (db && db.connection) db.connection.close();
     handleError(callback, '', error);
   }
 };

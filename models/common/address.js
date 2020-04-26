@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const AddressSchema = new Schema({
   country: { type: String, required: true, max: 100 },
@@ -12,5 +12,4 @@ const AddressSchema = new Schema({
   customField2: { type: String, max: 100 },
 });
 
-// Export the model
 module.exports = AddressSchema;

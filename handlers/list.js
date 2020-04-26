@@ -21,6 +21,8 @@ const qs = new MongoQS({
   },
 });
 
+
+let db = null;
 module.exports.list = async (event, context, callback) => {
   const {
     pathParameters: { type },
@@ -38,9 +40,10 @@ module.exports.list = async (event, context, callback) => {
     return handleError(callback, 'noModelFound');
   }
 
-  let db = null;
   try {
-    db = await mongoose.connect(mongoUrl, options);
+    if (!db || db.connection.readyState !== 1) {
+      db = await mongoose.connect(mongoUrl, options);
+    }
 
     const start =
       queryStringParameters && queryStringParameters._start
@@ -57,13 +60,8 @@ module.exports.list = async (event, context, callback) => {
     // Result
     const result = await Model.find(query).skip(start).limit(limit);
 
-    // Close connection
-    db.connection.close();
-
     handleResponse(callback, { count, result });
   } catch (error) {
-    // Close connection.
-    if (db && db.connection) db.connection.close();
     handleError(callback, '', error);
   }
 };
